@@ -1,2 +1,7 @@
 *Library/*
 *.meta
+*.csproj
+ProjectSettings/*
+*.sln
+*.userprefs
+Debug/*
