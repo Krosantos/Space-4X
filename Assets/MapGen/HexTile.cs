@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class HexTile : MonoBehaviour {
+public class HexTile : MonoBehaviour, ISelectable {
 
     public static HexMap ParentMap;
 
@@ -105,14 +105,15 @@ public class HexTile : MonoBehaviour {
     public int x, y,Id;
     public Resource Resource;
     public List<HexTile> Neighbours;
+    public GameObject Tint;
     public Color Color {
         get { return gameObject.GetComponent<SpriteRenderer>().color; }
         set { gameObject.GetComponent<SpriteRenderer>().color = value; }
     }
     public Color TintColor
     {
-        get { return gameObject.GetComponentInChildren<SpriteRenderer>().color; }
-        set { gameObject.GetComponentInChildren<SpriteRenderer>().color = value; }
+        get { return Tint.GetComponent<SpriteRenderer>().color; }
+        set { Tint.GetComponent<SpriteRenderer>().color = value; }
     }
 
     public void MapNeighbours()
@@ -130,6 +131,25 @@ public class HexTile : MonoBehaviour {
     void Awake() {
         Neighbours = new List<HexTile>();
         Resource = new Resource(0,0);
+    }
+
+    public void OnMouseDown()
+    {
+        UiSelect.Select(this);
+    }
+
+    public void OnSelect()
+    {
+        Debug.Log("POOP?");
+        if (UiSelect.Type == SelectType.Unit)
+        {
+            Debug.Log("POOP.");
+        }
+        UiSelect.Type = SelectType.Tile;
+    }
+
+    public void OnDeselect()
+    {
     }
 }
 

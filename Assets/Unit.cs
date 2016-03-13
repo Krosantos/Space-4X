@@ -2,7 +2,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class Unit : MonoBehaviour, ITurnable
+public class Unit : MonoBehaviour, ITurnable, ISelectable
 {
     public HexTile CurrentTile;
     public int PlayerId;
@@ -15,6 +15,13 @@ public class Unit : MonoBehaviour, ITurnable
     public Delegate Ability05;
     public ShipScale Scale;
     public float MaxHealth, CurrentHealth;
+    public List<HexTile> TilesInRange
+    {
+        get
+        {
+            return CurrentTile.GetMovableTiles(this);
+        }
+    }
 
     public Dictionary<Terrain, int> MoveCost
     {
@@ -50,9 +57,33 @@ public class Unit : MonoBehaviour, ITurnable
         MovesLeft = MaxMoves;
     }
 
+    public void OnSelect()
+    {
+        Debug.Log("I AM SELECTED.");
+        foreach (var tile in TilesInRange)
+        {
+            if (tile.OccupyUnit != null)
+            {
+                if (tile.OccupyUnit.PlayerId != PlayerId)
+                {
+                    tile.TintColor = TileExtensions.RedSelect;
+                }
+            }
+            else tile.TintColor = TileExtensions.BlueSelect;
+        }
+        UiSelect.Type = SelectType.Unit;
+    }
+
+    public void OnDeselect()
+    {
+        foreach (var tile in TilesInRange)
+        {
+            tile.TintColor = TileExtensions.ClearSelect;
+        }
+    }
+
     public void OnMouseDown()
     {
-        Debug.Log("MOUSEDOWN");
-        //CurrentTile.ColorSpriteByMovement(this,);
+        UiSelect.Select(this);
     }
 }

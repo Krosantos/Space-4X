@@ -10,7 +10,6 @@ public class PlayerClient : NetworkClient
 {
     public Dictionary<int, HexTile> AllTiles;
     public Dictionary<int, Unit> AllUnits;
-
     public int GameId, PlayerId;
     public List<ITurnable> Turnables;
 
@@ -58,6 +57,7 @@ public class PlayerClient : NetworkClient
     {
         var msg = netMsg.ReadMessage<RegisterNewPlayerMsg>();
         PlayerId = msg.PlayerId;
+        UiSelect.PlayerId = PlayerId;
         Debug.Log("I have been registered! I am playerID:" + PlayerId);
 
         //Now, request the map.
