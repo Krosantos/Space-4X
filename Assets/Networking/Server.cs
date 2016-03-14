@@ -39,10 +39,16 @@ public class Server : NetworkBehaviour {
     private void MapRequest(NetworkMessage netMsg)
     {
         Debug.Log("Map Request In!!");
+
+        //Making this a coroutine stops the game from bottlenecking in the event the map's huuuge.
+        StartCoroutine(SendChunks(netMsg));
+    }
+
+    IEnumerator<WaitForSeconds> SendChunks(NetworkMessage netMsg) {
         var wholeMap = HexTile.ParentMap.SerializeMap();
-        for (int x = 0; x < wholeMap.Length/500 + 1; x++)
+        for (int x = 0; x < wholeMap.Length / 500 + 1; x++)
         {
-            Debug.Log("Sending chunk " + (x) + " of " + wholeMap.Length/500 + "!");
+            Debug.Log("Sending chunk " + (x) + " of " + wholeMap.Length / 500 + "!");
             var chunk = new int[500];
             for (int y = 0; y < 500; y++)
             {
@@ -52,10 +58,12 @@ public class Server : NetworkBehaviour {
                 }
             }
             NetworkServer.SendToClient(netMsg.conn.connectionId, Messages.LoadMap, new LoadMapMsg(chunk, false));
+            yield return new WaitForSeconds(0.1f);
         }
+        Debug.Log("Telling the client that we sent the entire map.");
         NetworkServer.SendToClient(netMsg.conn.connectionId, Messages.LoadMap, new LoadMapMsg(null, true));
     }
-
+    
 }
 
 public class IdGenerator {

@@ -10,7 +10,8 @@
     BlackHole,
     Hyperspace,
     DeadSpace,
-    IonCloud
+    IonCloud,
+    Station
 }
 public enum ResourceType
 {

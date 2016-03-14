@@ -21,6 +21,7 @@ public class MapLoader : MonoBehaviour
         //If it's the final chunk, create the serialized map.
         if (msg.IsFinalPiece)
         {
+            Debug.Log("We have the entire map!");
             SerializedMap = new int[AllMapPieces.Sum(x => x.Length)];
             var index = 0;
             foreach (var piece in AllMapPieces)
@@ -37,12 +38,6 @@ public class MapLoader : MonoBehaviour
         //Otherwise, Add the chunk of map to the list.
         else AllMapPieces.Add(msg.SerializedMapChunk);
     }
-
-
-
-
-
-
 
     public static void LoadMapFromSerializedArray(int[] serializedMap, PlayerClient player)
     {
@@ -70,7 +65,7 @@ public class MapLoader : MonoBehaviour
 
             //Add the tile to reference lists.
             hexMap.tileList.Add(tile);
-            //player.AllTiles.Add(tile.Id, tile);
+            player.AllTiles.Add(tile.Id, tile);
         }
         //Now that the individual tiles are spawned, have them map neighbours and proceed.
         foreach (var tile in hexMap.tileList)

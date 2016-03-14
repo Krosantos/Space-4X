@@ -140,10 +140,10 @@ public class HexTile : MonoBehaviour, ISelectable {
 
     public void OnSelect()
     {
-        Debug.Log("POOP?");
+        Debug.Log("I am a tile!");
         if (UiSelect.Type == SelectType.Unit)
         {
-            Debug.Log("POOP.");
+            Debug.Log("Previously, a unit was selected!");
         }
         UiSelect.Type = SelectType.Tile;
     }
