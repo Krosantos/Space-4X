@@ -27,9 +27,7 @@ public class Unit : MonoBehaviour, ITurnable, ISelectable
     {
         get
         {
-            var result = new Dictionary<Terrain, int>();
-            result.Add(Terrain.AsteroidS, 2);
-            result.Add(Terrain.Space, 1);
+            var result = new Dictionary<Terrain, int> {{Terrain.AsteroidS, 2}, {Terrain.Space, 1}};
             return result;
         }
     }

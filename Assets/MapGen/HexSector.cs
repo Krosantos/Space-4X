@@ -95,15 +95,17 @@ public class HexSector {
             }
 
             GameObject hexObject;
-            if (coord.x %2 == 0)
-            {                
-                hexObject = Object.Instantiate(HexPrefab, new Vector3(tileXPos, tileYPos, 0), Quaternion.identity) as GameObject;
-            }
-            else
-            {
-                hexObject = Object.Instantiate(HexPrefab, new Vector3(tileXPos, tileYPos+0.5f, 0), Quaternion.identity) as GameObject;
-            }
-            var tile = hexObject.GetComponent<HexTile>();
+            //if (coord.x %2 == 0)
+            //{                
+            //    hexObject = Object.Instantiate(HexPrefab, new Vector3(tileXPos, tileYPos, 0), Quaternion.identity) as GameObject;
+            //}
+            //else
+            //{
+            //    hexObject = Object.Instantiate(HexPrefab, new Vector3(tileXPos, tileYPos+0.5f, 0), Quaternion.identity) as GameObject;
+            //}
+            //var tile = hexObject.GetComponent<HexTile>();
+
+            var tile = new HexTile();
             HexTile.ParentMap.tileList.Add(tile);
             
             ChildTiles.Add(tile);
