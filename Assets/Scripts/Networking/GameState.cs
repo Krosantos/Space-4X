@@ -5,8 +5,7 @@ namespace Assets.Networking
     public class GameState
     {
         //This stores all the various things that make a up a snapshot of a game.
-        public string GameName;
-        public int GameId;
+        public int MaxPlayers;
 
         public Dictionary<int, Unit> AllUnits;
         public Dictionary<int, HexTile> AllTiles;
