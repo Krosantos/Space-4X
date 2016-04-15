@@ -6,7 +6,7 @@ using UnityEngine.Networking;
 
 #endregion
 
-public class PlayerClient : NetworkClient
+public class Client : NetworkClient
 {
     public Dictionary<int, HexTile> AllTiles;
     public Dictionary<int, Unit> AllUnits;
@@ -15,7 +15,6 @@ public class PlayerClient : NetworkClient
 
     public void Awake()
     {
-        Connect("localhost", 7777);
         AllUnits = new Dictionary<int, Unit>();
         AllTiles = new Dictionary<int, HexTile>();
         RegisterHandler(Messages.ChangeDiploStatus, temp);

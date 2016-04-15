@@ -9,7 +9,7 @@ public class MapLoader : MonoBehaviour
         get { return Resources.Load<GameObject>("PlaceholderHex"); }
     }
 
-    public static PlayerClient Player;
+    public static Client Player;
     public static List<int[]> AllMapPieces;
     public static int[] SerializedMap;
 
@@ -39,7 +39,7 @@ public class MapLoader : MonoBehaviour
         else AllMapPieces.Add(msg.SerializedMapChunk);
     }
 
-    public static void LoadMapFromSerializedArray(int[] serializedMap, PlayerClient player)
+    public static void LoadMapFromSerializedArray(int[] serializedMap, Client player)
     {
         var hexMap = new HexMap(serializedMap[0],serializedMap[1]);
         HexTile.ParentMap = hexMap;
