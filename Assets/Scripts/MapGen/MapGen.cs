@@ -8,8 +8,10 @@ namespace Assets.MapGen
 
         public int XZones, YZones;
         public GameObject HexPrefab;
-
+        public static GameObject Map;
         public void Launch (bool useSpiralPattern) {
+            var Map = new GameObject();
+            Map.name = "Map";
             HexSector.HexPrefab = HexPrefab;
             HexTile.ParentMap = new HexMap(XZones*30,YZones*30);
 
@@ -38,17 +40,6 @@ namespace Assets.MapGen
             foreach (var coord in zoneCoords)
             {
                 new HexRegion((int)coord.x, (int)coord.y);
-            }
-
-            for (int x = 0; x < HexTile.TileMap.GetLength(0); x++)
-            {
-                for (int y = 0; y < HexTile.TileMap.GetLength(1); y++)
-                {
-                    if (HexTile.TileMap[x, y] != null)
-                    {
-                        HexTile.TileMap[x,y].MapNeighbours();
-                    }
-                }
             }
             Debug.Log("Map Loaded!");
         }

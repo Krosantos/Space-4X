@@ -4,7 +4,19 @@ using UnityEngine;
 public class HexTile : MonoBehaviour, ISelectable
 {
     public static HexMap ParentMap;
-    public List<HexTile> Neighbours;
+    public List<HexTile>  Neighbours{
+        get
+        {
+            var neighbours = new List<HexTile>();
+            if (UL != null) neighbours.Add(UL);
+            if (UU != null) neighbours.Add(UU);
+            if (UR != null) neighbours.Add(UR);
+            if (DL != null) neighbours.Add(DL);
+            if (DD != null) neighbours.Add(DD);
+            if (DR != null) neighbours.Add(DR);
+            return neighbours;
+        } 
+    }
     public Unit OccupyUnit;
 
     public HexSector ParentSector;
@@ -139,21 +151,8 @@ public class HexTile : MonoBehaviour, ISelectable
     {
     }
 
-    public void MapNeighbours()
-    {
-        var neighbours = new List<HexTile>();
-        if (UL != null) neighbours.Add(UL);
-        if (UU != null) neighbours.Add(UU);
-        if (UR != null) neighbours.Add(UR);
-        if (DL != null) neighbours.Add(DL);
-        if (DD != null) neighbours.Add(DD);
-        if (DR != null) neighbours.Add(DR);
-        Neighbours = neighbours;
-    }
-
     private void Awake()
     {
-        Neighbours = new List<HexTile>();
         Resource = new Resource(0, 0);
     }
 

@@ -13,7 +13,7 @@ namespace Assets.Networking
         public Dictionary<int, Resource> AllResources;
         public List<int> AllPlayers;
 
-        private int _currentNumber;
+        private static int _currentNumber;
 
         public GameState()
         {
@@ -23,7 +23,7 @@ namespace Assets.Networking
             AllResources = new Dictionary<int, Resource>();
         }
 
-        public int GenerateId()
+        public static int GenerateId()
         {
             _currentNumber++;
             return _currentNumber;

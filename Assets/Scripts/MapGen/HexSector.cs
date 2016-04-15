@@ -116,6 +116,8 @@ public class HexSector {
             HexTile.ParentMap.tileList.Add(tile);
             tile.x = tileXCord;
             tile.y = tileYCord;
+            hexObject.name = (tile.x+", "+tile.y);
+            hexObject.transform.parent = MapGen.Map.transform;
             //tile.Id = MapGen.IdGen.GenerateId();
         }
     }

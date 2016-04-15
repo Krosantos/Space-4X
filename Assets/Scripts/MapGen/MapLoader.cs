@@ -8,12 +8,11 @@ public class MapLoader : MonoBehaviour
     {
         get { return Resources.Load<GameObject>("PlaceholderHex"); }
     }
-
-    public static Client Player;
+    
     public static List<int[]> AllMapPieces;
     public static int[] SerializedMap;
 
-    public static void AddPacketToMap(LoadMapMsg msg)
+    public static void AddPacketToMap(TransmitMapMsg msg)
     {
         //Initialize the list if not present.
         if(AllMapPieces == null) AllMapPieces = new List<int[]>();
@@ -32,15 +31,17 @@ public class MapLoader : MonoBehaviour
                     index++;
                 }
             }
-            LoadMapFromSerializedArray(SerializedMap, Player);
+            LoadMapFromSerializedArray(SerializedMap);
         }
 
         //Otherwise, Add the chunk of map to the list.
         else AllMapPieces.Add(msg.SerializedMapChunk);
     }
 
-    public static void LoadMapFromSerializedArray(int[] serializedMap, Client player)
+    public static void LoadMapFromSerializedArray(int[] serializedMap)
     {
+        var MapObject = new GameObject();
+        MapObject.name = "Map";
         var hexMap = new HexMap(serializedMap[0],serializedMap[1]);
         HexTile.ParentMap = hexMap;
 
@@ -62,17 +63,11 @@ public class MapLoader : MonoBehaviour
             tile.Id = serializedMap[t+2];
             tile.Terrain = (Terrain)serializedMap[t+3];
             tile.Resource = new Resource(serializedMap[t+4], serializedMap[t+5]);
+            hexObject.name = (tile.x + ", " + tile.y);
+            hexObject.transform.parent = MapObject.transform;
 
             //Add the tile to reference lists.
             hexMap.tileList.Add(tile);
-            player.AllTiles.Add(tile.Id, tile);
-        }
-        //Now that the individual tiles are spawned, have them map neighbours and proceed.
-        foreach (var tile in hexMap.tileList)
-        {
-            tile.MapNeighbours();
-
-            //Later, change sprite/color to denote terrain.
         }
     }
 }

@@ -31,3 +31,10 @@ public enum ShipScale
     Large,
     Capital
 }
+
+public enum MapState
+{
+    None,
+    Requested,
+    Complete
+}

@@ -7,18 +7,17 @@ namespace Assets.Networking
 {
     public class Server : NetworkBehaviour
     {
-        Dictionary<NetworkConnection, int> _connectedPlayers;
+        public GameState GameState;
 
         [UsedImplicitly]
         void Awake() {
-            _connectedPlayers = new Dictionary<NetworkConnection, int>();
             NetworkServer.Listen(7777);
             NetworkServer.RegisterHandler(Messages.ChangeDiploStatus, temp);
             NetworkServer.RegisterHandler(Messages.CreateUnit, temp);
             NetworkServer.RegisterHandler(Messages.DestroyUnit, temp);
             NetworkServer.RegisterHandler(Messages.EndGame, temp);
             NetworkServer.RegisterHandler(Messages.EndTurn, temp);
-            NetworkServer.RegisterHandler(Messages.LoadMap, MapRequest);
+            NetworkServer.RegisterHandler(Messages.TransmitMap, MapRequest);
             NetworkServer.RegisterHandler(Messages.MoveUnit, temp);
             NetworkServer.RegisterHandler(Messages.SendMessage, temp);
             NetworkServer.RegisterHandler(Messages.TakeTurn, temp);
@@ -54,11 +53,11 @@ namespace Assets.Networking
                         chunk[y] = wholeMap[x * 500 + y];
                     }
                 }
-                NetworkServer.SendToClient(netMsg.conn.connectionId, Messages.LoadMap, new LoadMapMsg(chunk, false));
+                NetworkServer.SendToClient(netMsg.conn.connectionId, Messages.TransmitMap, new TransmitMapMsg(chunk, false));
                 yield return new WaitForSeconds(0.1f);
             }
             Debug.Log("Telling the client that we sent the entire map.");
-            NetworkServer.SendToClient(netMsg.conn.connectionId, Messages.LoadMap, new LoadMapMsg(null, true));
+            NetworkServer.SendToClient(netMsg.conn.connectionId, Messages.TransmitMap, new TransmitMapMsg(null, true));
         }
     }
 }

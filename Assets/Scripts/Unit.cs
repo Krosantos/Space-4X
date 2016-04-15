@@ -14,7 +14,7 @@ public class Unit : MonoBehaviour, ITurnable, ISelectable
     public Delegate Ability04;
     public Delegate Ability05;
     public ShipScale Scale;
-    public float MaxHealth, CurrentHealth;
+    public int MaxHealth, CurrentHealth;
     public List<HexTile> TilesInRange
     {
         get
