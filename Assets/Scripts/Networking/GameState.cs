@@ -23,6 +23,7 @@ namespace Assets.Scripts.Networking
             AllUnits = new Dictionary<int, Unit>();
             AllTiles = new Dictionary<int, HexTile>();
             AllResources = new Dictionary<int, Resource>();
+            AllPlayers = new List<int>();
             MapState = MapState.None;
             MapLoader = new MapLoader();
         }

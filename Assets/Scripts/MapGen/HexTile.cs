@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Assets.Scripts.MapGen
 {
     public class HexTile : MonoBehaviour, ISelectable
     {
+        private static int _idGen;
         public static HexMap ParentMap;
         public List<HexTile>  Neighbours{
             get
@@ -156,6 +158,12 @@ namespace Assets.Scripts.MapGen
         private void Awake()
         {
             Resource = new Resource(0, 0);
+        }
+
+        public void SetId()
+        {
+            _idGen++;
+            Id = _idGen;
         }
 
         public void OnMouseDown()

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Assets.Scripts.MapGen;
 using UnityEngine;
 
@@ -11,11 +10,12 @@ namespace Assets.Scripts
         public int PlayerId;
         public int UnitId;
         public int MaxMoves, MovesLeft;
-        public Delegate Ability01;
-        public Delegate Ability02;
-        public Delegate Ability03;
-        public Delegate Ability04;
-        public Delegate Ability05;
+        public delegate void Ability01(MonoBehaviour target);
+        public delegate void Ability02(MonoBehaviour target);
+        public delegate void Ability03(MonoBehaviour target);
+        public delegate void Ability04(MonoBehaviour target);
+        public delegate void Ability05(MonoBehaviour target);
+        public delegate void OnDeath();
         public ShipScale Scale;
         public int MaxHealth, CurrentHealth;
         public List<HexTile> TilesInRange

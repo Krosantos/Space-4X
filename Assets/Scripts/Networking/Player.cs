@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using UnityEngine;
 
 namespace Assets.Scripts.Networking
 {
-    public class Player : MonoBehaviour, ITurnable
+    public class Player : ITurnable
     {
         public int Id;
         public Dictionary<ResourceType, int> Resources;
@@ -17,10 +16,5 @@ namespace Assets.Scripts.Networking
 
 
         public void OnTurn() { }
-
-        public void CheatCoroutine(IEnumerator<WaitForSeconds> routineToRun)
-        {
-            StartCoroutine(routineToRun);
-        }
     }
 }

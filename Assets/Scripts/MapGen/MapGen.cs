@@ -3,14 +3,14 @@ using UnityEngine;
 
 namespace Assets.Scripts.MapGen
 {
-    public class MapGen : MonoBehaviour {
+    public class MapGen {
 
         public int XZones, YZones;
         public GameObject HexPrefab;
         public static GameObject Map;
+
         public void Launch (bool useSpiralPattern) {
             Map = new GameObject {name = "Map"};
-            HexSector.HexPrefab = HexPrefab;
             HexTile.ParentMap = new HexMap(XZones*30,YZones*30);
 
             var zoneCoords = new List<Vector2>();
@@ -39,7 +39,6 @@ namespace Assets.Scripts.MapGen
             {
                 new HexRegion((int)coord.x, (int)coord.y);
             }
-            Debug.Log("Map Loaded!");
         }
     }
 }

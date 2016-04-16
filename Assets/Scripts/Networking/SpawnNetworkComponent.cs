@@ -49,11 +49,6 @@ namespace Assets.Scripts.Networking
         {
             IsStartUp = false;
             gameObject.AddComponent<Server>();
-            var mapGen = gameObject.AddComponent<MapGen.MapGen>();
-            mapGen.HexPrefab = HexPrefab;
-            mapGen.XZones = 3;
-            mapGen.YZones = 3;
-            mapGen.Launch(UseSpiralPattern);
         }
 
         private void SetupClient()

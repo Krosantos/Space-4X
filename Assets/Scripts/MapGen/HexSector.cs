@@ -9,7 +9,11 @@ namespace Assets.Scripts.MapGen
         public int X, Y;
         public List<HexTile> ChildTiles;
         public HexRegion ParentRegion;
-        public static GameObject HexPrefab;
+        
+        public static GameObject HexPrefab
+        {
+            get { return Resources.Load<GameObject>("PlaceholderHex"); }
+        }
 
         public List<Vector2> GetTileMapping
         {
@@ -108,18 +112,16 @@ namespace Assets.Scripts.MapGen
                 }
                 var tile = hexObject.GetComponent<HexTile>();
 
-
+                
                 HexTile.ParentMap.TileList.Add(tile);
-            
                 ChildTiles.Add(tile);
                 tile.ParentSector = this;
                 HexTile.TileMap[tileXCord, tileYCord] = tile;
-                HexTile.ParentMap.TileList.Add(tile);
                 tile.X = tileXCord;
                 tile.Y = tileYCord;
+                tile.SetId();
                 hexObject.name = (tile.X+", "+tile.Y);
                 hexObject.transform.parent = MapGen.Map.transform;
-                //tile.Id = MapGen.IdGen.GenerateId();
             }
         }
     }

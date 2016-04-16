@@ -1,11 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Assets.Scripts.Networking;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Assets.Scripts.MapGen
 {
-    public class MapLoader : MonoBehaviour
+    public class MapLoader
     {
         public static GameObject HexPrefab
         {
@@ -30,7 +32,7 @@ namespace Assets.Scripts.MapGen
                 {
                     for (var x = 0; x < piece.Length; x++)
                     {
-                        _serializedMap[index] = x;
+                        _serializedMap[index] = piece[x];
                         index++;
                     }
                 }
@@ -48,21 +50,32 @@ namespace Assets.Scripts.MapGen
 
         public Dictionary<int,HexTile> MakeServerMapFromArray()
         {
+            var hexHolder = new GameObject();
             var result = new Dictionary<int,HexTile>();
-
+            var hexMap = new HexMap(_serializedMap[0], _serializedMap[1]);
+            HexTile.ParentMap = hexMap;
             for (var t = 2; t < _serializedMap.Length; t += 6)
             {
-                var tile = new HexTile
-                {
-                    X = _serializedMap[t],
-                    Y = _serializedMap[t + 1],
-                    Id = _serializedMap[t + 2],
-                    Terrain = (Terrain)_serializedMap[t + 3],
-                    Resource = new Resource(_serializedMap[t + 4], _serializedMap[t + 5])
-                };
+                //Serialized maps have large deserts of 0,0,0,0,0... on their tails. Cut this off when that happens.
+                if (_serializedMap[t + 2] == 0) break;
+
+                var tile = hexHolder.AddComponent<HexTile>();
+                tile.X = _serializedMap[t];
+                tile.Y = _serializedMap[t + 1];
+                tile.Id = _serializedMap[t + 2];
+                tile.Terrain = (Terrain) _serializedMap[t + 3];
+                tile.Resource = new Resource(_serializedMap[t + 4], _serializedMap[t + 5]);
 
                 //Add the tile to reference lists.
-                result.Add(tile.Id,tile);
+                try
+                {
+                    result.Add(tile.Id, tile);
+                }
+                catch (Exception e)
+                {
+                    Debug.Log(_serializedMap[t + 2]);
+                    Debug.Log(e);
+                }
             }
 
             return result;
@@ -76,14 +89,17 @@ namespace Assets.Scripts.MapGen
 
             for (var t = 2; t < _serializedMap.Length; t += 6)
             {
+                //Serialized maps have large deserts of 0,0,0,0,0... on their tails. Cut this off when that happens.
+                if (_serializedMap[t + 2] == 0) break;
+
                 GameObject hexObject;
                 if (_serializedMap[t] % 2 == 0)
                 {
-                    hexObject = Instantiate(HexPrefab, new Vector3(_serializedMap[t] * 0.815f, _serializedMap[t+1], 0), Quaternion.identity) as GameObject;
+                    hexObject = Object.Instantiate(HexPrefab, new Vector3(_serializedMap[t] * 0.815f, _serializedMap[t+1], 0), Quaternion.identity) as GameObject;
                 }
                 else
                 {
-                    hexObject = Instantiate(HexPrefab, new Vector3(_serializedMap[t] * 0.815f, _serializedMap[t+1] + 0.5f, 0), Quaternion.identity) as GameObject;
+                    hexObject = Object.Instantiate(HexPrefab, new Vector3(_serializedMap[t] * 0.815f, _serializedMap[t+1] + 0.5f, 0), Quaternion.identity) as GameObject;
                 }
                 if (hexObject == null) continue;
                 var tile = hexObject.GetComponent<HexTile>();

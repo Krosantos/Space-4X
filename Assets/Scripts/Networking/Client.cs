@@ -17,6 +17,7 @@ namespace Assets.Scripts.Networking
 
         public void Awake()
         {
+            Player = new Player();
             GameState = new GameState();
             RegisterHandler(Messages.ChangeDiploStatus, temp);
             RegisterHandler(Messages.CreateUnit, temp);
@@ -24,13 +25,14 @@ namespace Assets.Scripts.Networking
             RegisterHandler(Messages.EndGame, temp);
             RegisterHandler(Messages.EndTurn, temp);
             RegisterHandler(Messages.TransmitMap, OnMapTransmitted);
-            RegisterHandler(Messages.MoveUnit, temp);
+            RegisterHandler(Messages.MoveUnit, OnUnitMoveOrder);
             RegisterHandler(Messages.SendMessage, temp);
             RegisterHandler(Messages.TakeTurn, OnTurn);
             RegisterHandler(Messages.UnlockTech, temp);
             RegisterHandler(Messages.UpdateResources, temp);
             RegisterHandler(Messages.RegisterNewPlayer, OnRegistered);
-            RegisterHandler(Messages.CheckForMap, temp);
+            RegisterHandler(Messages.CheckForMap, OnMapCheck);
+            Connect("localhost",7777);
         }
 
         //This is just for while I'm setting up handlers.
@@ -51,8 +53,13 @@ namespace Assets.Scripts.Networking
             var msg = netMsg.ReadMessage<CheckMapMsg>();
             if (msg.MapExists == MapState.None)
             {
-                //Create a map
-                //Tell the server you have a map
+                Debug.Log("Server wants me to make a map.");
+                var mapGen = new MapGen.MapGen();
+                mapGen.XZones = 4;
+                mapGen.YZones = 4;
+                mapGen.Launch(true);
+                Debug.Log("Map made! Sending it to the server.");
+                Singleton<MonoBehaviour>.Instance.StartCoroutine(SendChunksToServer(this));
             }
             else if (msg.MapExists == MapState.Requested)
             {
@@ -64,12 +71,12 @@ namespace Assets.Scripts.Networking
 
         private void OnMapTransmitted(NetworkMessage netMsg)
         {
-            Debug.Log("We found a piece of the map!");
             var msg = netMsg.ReadMessage<TransmitMapMsg>();
-            if (msg.IsRequest) Player.CheatCoroutine(SendChunksToServer(this));
+            if (msg.IsRequest) Singleton<MonoBehaviour>.Instance.StartCoroutine(SendChunksToServer(this));
             else
             {
-                if(GameState.MapLoader.AddPacketToMap(msg, GameState)) GameState.MapLoader.MakeClientMapFromArray();
+                Debug.Log("We found a piece of the map!");
+                if (GameState.MapLoader.AddPacketToMap(msg, GameState)) GameState.MapLoader.MakeClientMapFromArray();
             }
 
         }
@@ -94,7 +101,6 @@ namespace Assets.Scripts.Networking
             var wholeMap = HexTile.ParentMap.SerializeMap();
             for (int x = 0; x < wholeMap.Length/500 + 1; x++)
             {
-                Debug.Log("Sending chunk " + (x) + " of " + wholeMap.Length/500 + "!");
                 var chunk = new int[500];
                 for (int y = 0; y < 500; y++)
                 {
@@ -104,9 +110,9 @@ namespace Assets.Scripts.Networking
                     }
                 }
                 client.Send(Messages.TransmitMap, new TransmitMapMsg(chunk, false));
-                yield return new WaitForSeconds(0.1f);
+                yield return new WaitForSeconds(0.01f);
             }
-            Debug.Log("Telling the client that we sent the entire map.");
+            Debug.Log("Telling the server that we sent the entire map.");
             client.Send(Messages.TransmitMap, new TransmitMapMsg(null, true));
         }
     }

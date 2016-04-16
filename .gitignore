@@ -8,3 +8,6 @@ obj/*
 *.suo
 Temp/*
 *.suo*
+TestBuild*
+*.pdb
+*.vs*

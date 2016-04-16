@@ -27,13 +27,18 @@ namespace Assets.Scripts.Networking
             NetworkServer.RegisterHandler(Messages.TakeTurn, temp);
             NetworkServer.RegisterHandler(Messages.UnlockTech, temp);
             NetworkServer.RegisterHandler(Messages.UpdateResources, temp);
+            NetworkServer.RegisterHandler(Messages.CheckForMap, CheckForMap );
             NetworkServer.RegisterHandler(MsgType.Connect, RegisterPlayerOnConnect);
         }
 
         //This is just for while I'm setting up handlers.
         private void temp(NetworkMessage netMsg) { }
 
-        private void RegisterPlayerOnConnect(NetworkMessage netMsg) {
+        private void RegisterPlayerOnConnect(NetworkMessage netMsg)
+        {
+            var playerId = GameState.GenerateId();
+            NetworkServer.SendToClient(netMsg.conn.connectionId,Messages.RegisterNewPlayer,new RegisterNewPlayerMsg(playerId));
+            GameState.AllPlayers.Add(playerId);
         }
 
         private void TransmitMap(NetworkMessage netMsg)
@@ -43,12 +48,16 @@ namespace Assets.Scripts.Networking
             else
             {
                 if (GameState.MapLoader.AddPacketToMap(msg, GameState))
+                {
                     GameState.AllTiles = GameState.MapLoader.MakeServerMapFromArray();
+                    GameState.MapState = MapState.Complete;
+                }
             }
         }
 
         private void CheckForMap(NetworkMessage netMsg)
         {
+            Debug.Log("Client requested map state. Response: "+GameState.MapState);
             if (GameState.MapState == MapState.None)
             {
                 //Tell the client to make a map
@@ -70,11 +79,11 @@ namespace Assets.Scripts.Networking
         }
 
         //Making this a coroutine stops the game from bottlenecking in the event the map's huuuge.
-        private IEnumerator<WaitForSeconds> SendChunks(NetworkMessage netMsg) {
-            var wholeMap = HexTile.ParentMap.SerializeMap();
+        private IEnumerator<WaitForSeconds> SendChunks(NetworkMessage netMsg)
+        {
+            var wholeMap = GameState.SerializedMap;
             for (int x = 0; x < wholeMap.Length / 500 + 1; x++)
             {
-                Debug.Log("Sending chunk " + (x) + " of " + wholeMap.Length / 500 + "!");
                 var chunk = new int[500];
                 for (int y = 0; y < 500; y++)
                 {
@@ -84,7 +93,7 @@ namespace Assets.Scripts.Networking
                     }
                 }
                 NetworkServer.SendToClient(netMsg.conn.connectionId, Messages.TransmitMap, new TransmitMapMsg(chunk, false));
-                yield return new WaitForSeconds(0.1f);
+                yield return new WaitForSeconds(0.01f);
             }
             Debug.Log("Telling the client that we sent the entire map.");
             NetworkServer.SendToClient(netMsg.conn.connectionId, Messages.TransmitMap, new TransmitMapMsg(null, true));
