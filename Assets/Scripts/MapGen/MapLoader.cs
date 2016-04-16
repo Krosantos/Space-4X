@@ -1,73 +1,104 @@
-﻿using UnityEngine;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Assets.Scripts.Networking;
+using UnityEngine;
 
-public class MapLoader : MonoBehaviour
+namespace Assets.Scripts.MapGen
 {
-    public static GameObject HexPrefab
+    public class MapLoader : MonoBehaviour
     {
-        get { return Resources.Load<GameObject>("PlaceholderHex"); }
-    }
-    
-    public static List<int[]> AllMapPieces;
-    public static int[] SerializedMap;
-
-    public static void AddPacketToMap(TransmitMapMsg msg)
-    {
-        //Initialize the list if not present.
-        if(AllMapPieces == null) AllMapPieces = new List<int[]>();
-
-        //If it's the final chunk, create the serialized map.
-        if (msg.IsFinalPiece)
+        public static GameObject HexPrefab
         {
-            Debug.Log("We have the entire map!");
-            SerializedMap = new int[AllMapPieces.Sum(x => x.Length)];
-            var index = 0;
-            foreach (var piece in AllMapPieces)
-            {
-                for (int x = 0; x < piece.Length; x++)
-                {
-                    SerializedMap[index] = piece[x];
-                    index++;
-                }
-            }
-            LoadMapFromSerializedArray(SerializedMap);
+            get { return Resources.Load<GameObject>("PlaceholderHex"); }
         }
+    
+        private List<int[]> _allMapPieces;
+        private int[] _serializedMap;
 
-        //Otherwise, Add the chunk of map to the list.
-        else AllMapPieces.Add(msg.SerializedMapChunk);
-    }
-
-    public static void LoadMapFromSerializedArray(int[] serializedMap)
-    {
-        var MapObject = new GameObject();
-        MapObject.name = "Map";
-        var hexMap = new HexMap(serializedMap[0],serializedMap[1]);
-        HexTile.ParentMap = hexMap;
-
-        for (int t = 2; t < serializedMap.Length; t += 6)
+        public bool AddPacketToMap(TransmitMapMsg msg, GameState gameState)
         {
-            GameObject hexObject;
-            if (serializedMap[t] % 2 == 0)
+            //Initialize the list if not present.
+            if(_allMapPieces == null) _allMapPieces = new List<int[]>();
+
+            //If it's the final chunk, create the serialized map.
+            if (msg.IsFinalPiece)
             {
-                hexObject = Instantiate(HexPrefab, new Vector3(serializedMap[t] * 0.815f, serializedMap[t+1], 0), Quaternion.identity) as GameObject;
+                Debug.Log("We have the entire map!");
+                _serializedMap = new int[_allMapPieces.Sum(x => x.Length)];
+                var index = 0;
+                foreach (var piece in _allMapPieces)
+                {
+                    for (var x = 0; x < piece.Length; x++)
+                    {
+                        _serializedMap[index] = x;
+                        index++;
+                    }
+                }
+                gameState.SerializedMap = _serializedMap;
+                return true;
             }
+
+            //Otherwise, Add the chunk of map to the list.
             else
             {
-                hexObject = Instantiate(HexPrefab, new Vector3(serializedMap[t] * 0.815f, serializedMap[t+1] + 0.5f, 0), Quaternion.identity) as GameObject;
+                _allMapPieces.Add(msg.SerializedMapChunk);
+                return false;
             }
-            var tile = hexObject.GetComponent<HexTile>();
-            hexMap.allTiles[serializedMap[t], serializedMap[t+1]] = tile;
-            tile.x = serializedMap[t];
-            tile.y = serializedMap[t+1];
-            tile.Id = serializedMap[t+2];
-            tile.Terrain = (Terrain)serializedMap[t+3];
-            tile.Resource = new Resource(serializedMap[t+4], serializedMap[t+5]);
-            hexObject.name = (tile.x + ", " + tile.y);
-            hexObject.transform.parent = MapObject.transform;
+        }
 
-            //Add the tile to reference lists.
-            hexMap.tileList.Add(tile);
+        public Dictionary<int,HexTile> MakeServerMapFromArray()
+        {
+            var result = new Dictionary<int,HexTile>();
+
+            for (var t = 2; t < _serializedMap.Length; t += 6)
+            {
+                var tile = new HexTile
+                {
+                    X = _serializedMap[t],
+                    Y = _serializedMap[t + 1],
+                    Id = _serializedMap[t + 2],
+                    Terrain = (Terrain)_serializedMap[t + 3],
+                    Resource = new Resource(_serializedMap[t + 4], _serializedMap[t + 5])
+                };
+
+                //Add the tile to reference lists.
+                result.Add(tile.Id,tile);
+            }
+
+            return result;
+        }
+
+        public void MakeClientMapFromArray()
+        {
+            var mapObject = new GameObject {name = "Map"};
+            var hexMap = new HexMap(_serializedMap[0], _serializedMap[1]);
+            HexTile.ParentMap = hexMap;
+
+            for (var t = 2; t < _serializedMap.Length; t += 6)
+            {
+                GameObject hexObject;
+                if (_serializedMap[t] % 2 == 0)
+                {
+                    hexObject = Instantiate(HexPrefab, new Vector3(_serializedMap[t] * 0.815f, _serializedMap[t+1], 0), Quaternion.identity) as GameObject;
+                }
+                else
+                {
+                    hexObject = Instantiate(HexPrefab, new Vector3(_serializedMap[t] * 0.815f, _serializedMap[t+1] + 0.5f, 0), Quaternion.identity) as GameObject;
+                }
+                if (hexObject == null) continue;
+                var tile = hexObject.GetComponent<HexTile>();
+                hexMap.AllTiles[_serializedMap[t], _serializedMap[t+1]] = tile;
+                tile.X = _serializedMap[t];
+                tile.Y = _serializedMap[t+1];
+                tile.Id = _serializedMap[t+2];
+                tile.Terrain = (Terrain)_serializedMap[t+3];
+                tile.Resource = new Resource(_serializedMap[t+4], _serializedMap[t+5]);
+                hexObject.name = (tile.X + ", " + tile.Y);
+                hexObject.transform.parent = mapObject.transform;
+
+                //Add the tile to reference lists.
+                hexMap.TileList.Add(tile);
+            }
         }
     }
 }

@@ -16,6 +16,7 @@ public class Messages{
     public const short RegisterNewPlayer = 110;
     public const short UpdateResources = 111;
     public const short CheckForMap = 112;
+    public const short StartGame = 113;
 }
 
 public class MoveUnitMsg : MessageBase
@@ -51,7 +52,9 @@ public class RequestMapMsg : MessageBase
     }
 }
 
-public class TransmitMapMsg : MessageBase {
+public class TransmitMapMsg : MessageBase
+{
+    public bool IsRequest;
     public int[] SerializedMapChunk;
     public bool IsFinalPiece;
 
@@ -59,6 +62,12 @@ public class TransmitMapMsg : MessageBase {
     public TransmitMapMsg(int[] input, bool isFinal) {
         SerializedMapChunk = input;
         IsFinalPiece = isFinal;
+        IsRequest = false;
+    }
+
+    public TransmitMapMsg(bool isRequest)
+    {
+        IsRequest = isRequest;
     }
 }
 

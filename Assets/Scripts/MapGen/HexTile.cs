@@ -1,203 +1,206 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class HexTile : MonoBehaviour, ISelectable
+namespace Assets.Scripts.MapGen
 {
-    public static HexMap ParentMap;
-    public List<HexTile>  Neighbours{
-        get
-        {
-            var neighbours = new List<HexTile>();
-            if (UL != null) neighbours.Add(UL);
-            if (UU != null) neighbours.Add(UU);
-            if (UR != null) neighbours.Add(UR);
-            if (DL != null) neighbours.Add(DL);
-            if (DD != null) neighbours.Add(DD);
-            if (DR != null) neighbours.Add(DR);
-            return neighbours;
-        } 
-    }
-    public Unit OccupyUnit;
-
-    public HexSector ParentSector;
-    public Resource Resource;
-    public Terrain Terrain;
-    public GameObject Tint;
-    public int x, y, Id;
-
-    public HexRegion ParentRegion
+    public class HexTile : MonoBehaviour, ISelectable
     {
-        get { return ParentSector.ParentRegion; }
-    }
-
-    public static HexTile[,] TileMap
-    {
-        get { return ParentMap.allTiles; }
-        set { ParentMap.allTiles = value; }
-    }
-
-    //Neighbours are properties: makes calculation a bit more CPU intensive, saves a ton of memory.
-    public HexTile UL
-    {
-        get
-        {
-            if (x%2 == 0 && x > 0)
+        public static HexMap ParentMap;
+        public List<HexTile>  Neighbours{
+            get
             {
-                if (TileMap[x - 1, y] != null) return TileMap[x - 1, y];
-            }
-            else if (x > 0 && y + 1 < TileMap.GetLength(1))
+                var neighbours = new List<HexTile>();
+                if (Ul != null) neighbours.Add(Ul);
+                if (Uu != null) neighbours.Add(Uu);
+                if (Ur != null) neighbours.Add(Ur);
+                if (Dl != null) neighbours.Add(Dl);
+                if (Dd != null) neighbours.Add(Dd);
+                if (Dr != null) neighbours.Add(Dr);
+                return neighbours;
+            } 
+        }
+        public Unit OccupyUnit;
+
+        public HexSector ParentSector;
+        public Resource Resource;
+        public Terrain Terrain;
+        public GameObject Tint;
+        public int X, Y, Id;
+
+        public HexRegion ParentRegion
+        {
+            get { return ParentSector.ParentRegion; }
+        }
+
+        public static HexTile[,] TileMap
+        {
+            get { return ParentMap.AllTiles; }
+            set { ParentMap.AllTiles = value; }
+        }
+
+        //Neighbours are properties: makes calculation a bit more CPU intensive, saves a ton of memory.
+        public HexTile Ul
+        {
+            get
             {
-                if (TileMap[x - 1, y + 1] != null) return TileMap[x - 1, y + 1];
+                if (X%2 == 0 && X > 0)
+                {
+                    if (TileMap[X - 1, Y] != null) return TileMap[X - 1, Y];
+                }
+                else if (X > 0 && Y + 1 < TileMap.GetLength(1))
+                {
+                    if (TileMap[X - 1, Y + 1] != null) return TileMap[X - 1, Y + 1];
+                }
+                return null;
             }
-            return null;
+        }
+
+        public HexTile Uu
+        {
+            get
+            {
+                if (Y + 1 < TileMap.GetLength(1))
+                {
+                    if (TileMap[X, Y + 1] != null) return TileMap[X, Y + 1];
+                }
+                return null;
+            }
+        }
+
+        public HexTile Ur
+        {
+            get
+            {
+                if (X%2 == 0 && X + 1 < TileMap.GetLength(0))
+                {
+                    if (TileMap[X + 1, Y] != null) return TileMap[X + 1, Y];
+                }
+                else if (X%2 != 0 && X + 1 < TileMap.GetLength(0) && Y + 1 < TileMap.GetLength(1))
+                {
+                    if (TileMap[X + 1, Y + 1] != null) return TileMap[X + 1, Y + 1];
+                }
+                return null;
+            }
+        }
+
+        public HexTile Dl
+        {
+            get
+            {
+                if (X%2 == 0 && X > 0 && Y > 0)
+                {
+                    if (TileMap[X - 1, Y - 1] != null) return TileMap[X - 1, Y - 1];
+                }
+                else if (X%2 != 0 && X > 0)
+                {
+                    if (TileMap[X - 1, Y] != null) return TileMap[X - 1, Y];
+                }
+                return null;
+            }
+        }
+
+        public HexTile Dd
+        {
+            get
+            {
+                if (Y > 0)
+                {
+                    if (TileMap[X, Y - 1] != null) return TileMap[X, Y - 1];
+                }
+                return null;
+            }
+        }
+
+        public HexTile Dr
+        {
+            get
+            {
+                if (X%2 == 0 && X + 1 < TileMap.GetLength(0) && Y > 0)
+                {
+                    if (TileMap[X + 1, Y - 1] != null) return TileMap[X + 1, Y - 1];
+                }
+                else if (X%2 != 0 && X + 1 < TileMap.GetLength(0))
+                {
+                    if (TileMap[X + 1, Y] != null) return TileMap[X + 1, Y];
+                }
+                return null;
+            }
+        }
+
+        public Color Color
+        {
+            get { return gameObject.GetComponent<SpriteRenderer>().color; }
+            set { gameObject.GetComponent<SpriteRenderer>().color = value; }
+        }
+
+        public Color TintColor
+        {
+            get { return Tint.GetComponent<SpriteRenderer>().color; }
+            set { Tint.GetComponent<SpriteRenderer>().color = value; }
+        }
+
+        public void OnSelect()
+        {
+            Debug.Log("I am a tile!");
+            if (UiSelect.Type == SelectType.Unit)
+            {
+                Debug.Log("Previously, a unit was selected!");
+            }
+            UiSelect.Type = SelectType.Tile;
+        }
+
+        public void OnDeselect()
+        {
+        }
+
+        private void Awake()
+        {
+            Resource = new Resource(0, 0);
+        }
+
+        public void OnMouseDown()
+        {
+            UiSelect.Select(this);
         }
     }
 
-    public HexTile UU
+    public class HexMap
     {
-        get
+        public HexTile[,] AllTiles;
+        public List<HexTile> TileList;
+        private readonly int _xDim;
+        private readonly int _yDim;
+
+        public HexMap()
         {
-            if (y + 1 < TileMap.GetLength(1))
-            {
-                if (TileMap[x, y + 1] != null) return TileMap[x, y + 1];
-            }
-            return null;
+            TileList = new List<HexTile>();
         }
-    }
 
-    public HexTile UR
-    {
-        get
+        public HexMap(int x, int y)
         {
-            if (x%2 == 0 && x + 1 < TileMap.GetLength(0))
-            {
-                if (TileMap[x + 1, y] != null) return TileMap[x + 1, y];
-            }
-            else if (x%2 != 0 && x + 1 < TileMap.GetLength(0) && y + 1 < TileMap.GetLength(1))
-            {
-                if (TileMap[x + 1, y + 1] != null) return TileMap[x + 1, y + 1];
-            }
-            return null;
+            _xDim = x;
+            _yDim = y;
+            AllTiles = new HexTile[x, y];
+            TileList = new List<HexTile>();
         }
-    }
 
-    public HexTile DL
-    {
-        get
+        public int[] SerializeMap()
         {
-            if (x%2 == 0 && x > 0 && y > 0)
+            var result = new int[2 + TileList.Count*6];
+            result[0] = _xDim;
+            result[1] = _yDim;
+            var index = 2;
+            foreach (var tile in TileList)
             {
-                if (TileMap[x - 1, y - 1] != null) return TileMap[x - 1, y - 1];
+                result[index] = tile.X;
+                result[index + 1] = tile.Y;
+                result[index + 2] = tile.Id;
+                result[index + 3] = (int) tile.Terrain;
+                result[index + 4] = (int) tile.Resource.Type;
+                result[index + 5] = tile.Resource.Quantity;
+                index += 6;
             }
-            else if (x%2 != 0 && x > 0)
-            {
-                if (TileMap[x - 1, y] != null) return TileMap[x - 1, y];
-            }
-            return null;
+            return result;
         }
-    }
-
-    public HexTile DD
-    {
-        get
-        {
-            if (y > 0)
-            {
-                if (TileMap[x, y - 1] != null) return TileMap[x, y - 1];
-            }
-            return null;
-        }
-    }
-
-    public HexTile DR
-    {
-        get
-        {
-            if (x%2 == 0 && x + 1 < TileMap.GetLength(0) && y > 0)
-            {
-                if (TileMap[x + 1, y - 1] != null) return TileMap[x + 1, y - 1];
-            }
-            else if (x%2 != 0 && x + 1 < TileMap.GetLength(0))
-            {
-                if (TileMap[x + 1, y] != null) return TileMap[x + 1, y];
-            }
-            return null;
-        }
-    }
-
-    public Color Color
-    {
-        get { return gameObject.GetComponent<SpriteRenderer>().color; }
-        set { gameObject.GetComponent<SpriteRenderer>().color = value; }
-    }
-
-    public Color TintColor
-    {
-        get { return Tint.GetComponent<SpriteRenderer>().color; }
-        set { Tint.GetComponent<SpriteRenderer>().color = value; }
-    }
-
-    public void OnSelect()
-    {
-        Debug.Log("I am a tile!");
-        if (UiSelect.Type == SelectType.Unit)
-        {
-            Debug.Log("Previously, a unit was selected!");
-        }
-        UiSelect.Type = SelectType.Tile;
-    }
-
-    public void OnDeselect()
-    {
-    }
-
-    private void Awake()
-    {
-        Resource = new Resource(0, 0);
-    }
-
-    public void OnMouseDown()
-    {
-        UiSelect.Select(this);
-    }
-}
-
-public class HexMap
-{
-    public HexTile[,] allTiles;
-    public List<HexTile> tileList;
-    private readonly int xDim;
-    private readonly int yDim;
-
-    public HexMap()
-    {
-        tileList = new List<HexTile>();
-    }
-
-    public HexMap(int x, int y)
-    {
-        xDim = x;
-        yDim = y;
-        allTiles = new HexTile[x, y];
-        tileList = new List<HexTile>();
-    }
-
-    public int[] SerializeMap()
-    {
-        var result = new int[2 + tileList.Count*6];
-        result[0] = xDim;
-        result[1] = yDim;
-        var index = 2;
-        foreach (var tile in tileList)
-        {
-            result[index] = tile.x;
-            result[index + 1] = tile.y;
-            result[index + 2] = tile.Id;
-            result[index + 3] = (int) tile.Terrain;
-            result[index + 4] = (int) tile.Resource.Type;
-            result[index + 5] = tile.Resource.Quantity;
-            index += 6;
-        }
-        return result;
     }
 }

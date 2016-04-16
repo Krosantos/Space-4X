@@ -6,7 +6,7 @@ using UnityEngine.Networking;
 
 #endregion
 
-namespace Assets.Networking
+namespace Assets.Scripts.Networking
 {
     public class SpawnNetworkComponent : NetworkBehaviour
     {

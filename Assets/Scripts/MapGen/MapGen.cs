@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
-using Assets.Networking;
 using UnityEngine;
 
-namespace Assets.MapGen
+namespace Assets.Scripts.MapGen
 {
     public class MapGen : MonoBehaviour {
 
@@ -10,8 +9,7 @@ namespace Assets.MapGen
         public GameObject HexPrefab;
         public static GameObject Map;
         public void Launch (bool useSpiralPattern) {
-            var Map = new GameObject();
-            Map.name = "Map";
+            Map = new GameObject {name = "Map"};
             HexSector.HexPrefab = HexPrefab;
             HexTile.ParentMap = new HexMap(XZones*30,YZones*30);
 
@@ -28,9 +26,9 @@ namespace Assets.MapGen
             }
             else
             {
-                for (int x = 0; x < XZones; x++)
+                for (var x = 0; x < XZones; x++)
                 {
-                    for (int y = 0; y < YZones; y++)
+                    for (var y = 0; y < YZones; y++)
                     {
                         zoneCoords.Add(new Vector2(x, y));
                     }

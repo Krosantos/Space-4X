@@ -1,23 +1,27 @@
 ﻿using System.Collections.Generic;
+using Assets.Scripts.MapGen;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Networking;
 
-namespace Assets.Networking
+namespace Assets.Scripts.Networking
 {
     public class Server : NetworkBehaviour
     {
         public GameState GameState;
 
+        private List<int> _clientsWaitingForMap;
+
         [UsedImplicitly]
         void Awake() {
+            GameState = new GameState();
             NetworkServer.Listen(7777);
             NetworkServer.RegisterHandler(Messages.ChangeDiploStatus, temp);
             NetworkServer.RegisterHandler(Messages.CreateUnit, temp);
             NetworkServer.RegisterHandler(Messages.DestroyUnit, temp);
             NetworkServer.RegisterHandler(Messages.EndGame, temp);
             NetworkServer.RegisterHandler(Messages.EndTurn, temp);
-            NetworkServer.RegisterHandler(Messages.TransmitMap, MapRequest);
+            NetworkServer.RegisterHandler(Messages.TransmitMap, TransmitMap);
             NetworkServer.RegisterHandler(Messages.MoveUnit, temp);
             NetworkServer.RegisterHandler(Messages.SendMessage, temp);
             NetworkServer.RegisterHandler(Messages.TakeTurn, temp);
@@ -32,15 +36,41 @@ namespace Assets.Networking
         private void RegisterPlayerOnConnect(NetworkMessage netMsg) {
         }
 
-        private void MapRequest(NetworkMessage netMsg)
+        private void TransmitMap(NetworkMessage netMsg)
         {
-            Debug.Log("Map Request In!!");
-
-            //Making this a coroutine stops the game from bottlenecking in the event the map's huuuge.
-            StartCoroutine(SendChunks(netMsg));
+            var msg = netMsg.ReadMessage<TransmitMapMsg>();
+            if (msg.IsRequest) StartCoroutine(SendChunks(netMsg));
+            else
+            {
+                if (GameState.MapLoader.AddPacketToMap(msg, GameState))
+                    GameState.AllTiles = GameState.MapLoader.MakeServerMapFromArray();
+            }
         }
 
-        IEnumerator<WaitForSeconds> SendChunks(NetworkMessage netMsg) {
+        private void CheckForMap(NetworkMessage netMsg)
+        {
+            if (GameState.MapState == MapState.None)
+            {
+                //Tell the client to make a map
+                NetworkServer.SendToClient(netMsg.conn.connectionId,Messages.CheckForMap,new CheckMapMsg(MapState.None));
+                GameState.MapState = MapState.Requested;
+            }
+            else if (GameState.MapState == MapState.Requested)
+            {
+                //If we have a map brewing on a client, put this requester on a waiting list.
+                if (_clientsWaitingForMap == null) _clientsWaitingForMap = new List<int>();
+                _clientsWaitingForMap.Add(netMsg.conn.connectionId);
+            }
+            else
+            {
+                //If the map's already live, send it.
+                StartCoroutine(SendChunks(netMsg));
+            }
+
+        }
+
+        //Making this a coroutine stops the game from bottlenecking in the event the map's huuuge.
+        private IEnumerator<WaitForSeconds> SendChunks(NetworkMessage netMsg) {
             var wholeMap = HexTile.ParentMap.SerializeMap();
             for (int x = 0; x < wholeMap.Length / 500 + 1; x++)
             {

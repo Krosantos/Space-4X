@@ -7,9 +7,9 @@ namespace Assets.Scripts.Networking
     {
         public int Id;
         public Dictionary<ResourceType, int> Resources;
-        public int credits, creditRate;
-        public int science, scienceRate;
-        public int diplo, diploRate;
+        public int Credits, CreditRate;
+        public int Science, ScienceRate;
+        public int Diplo, DiploRate;
 
         //List of blueprints
         //Dictionary of player<-->agreement struct
@@ -17,6 +17,10 @@ namespace Assets.Scripts.Networking
 
 
         public void OnTurn() { }
-        
+
+        public void CheatCoroutine(IEnumerator<WaitForSeconds> routineToRun)
+        {
+            StartCoroutine(routineToRun);
+        }
     }
 }
