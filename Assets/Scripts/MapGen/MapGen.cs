@@ -6,7 +6,10 @@ namespace Assets.Scripts.MapGen
     public class MapGen {
 
         public int XZones, YZones;
-        public GameObject HexPrefab;
+        public static GameObject HexPrefab
+        {
+            get { return Resources.Load<GameObject>("PlaceholderHex"); }
+        }
         public static GameObject Map;
 
         public void Launch (bool useSpiralPattern) {
