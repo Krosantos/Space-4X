@@ -2,6 +2,7 @@
 *.csproj
 ProjectSettings/*
 *.sln
+*.sln.*
 *.userprefs
 Debug/*
 obj/*
@@ -10,4 +11,4 @@ Temp/*
 *.suo*
 TestBuild*
 *.pdb
-*.vs*
+*.vs/*
