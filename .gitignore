@@ -1,6 +1,5 @@
 *Library/*
 *.csproj
-ProjectSettings/*
 *.sln
 *.sln.*
 *.userprefs
