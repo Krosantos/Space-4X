@@ -38,3 +38,24 @@ public enum MapState
     Requested,
     Complete
 }
+
+public enum RegionType
+{
+    SolarSystem,
+    Asteroids,
+    Riches,
+    Sneaky,
+    Mixed,
+    PirateMaybe
+}
+
+public enum SectorType
+{
+    SystemCenter,
+    Asteroids,
+    Planet,
+    Deadspace,
+    Clouds,
+    Blend,
+    Anomaly
+}

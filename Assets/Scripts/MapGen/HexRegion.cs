@@ -5,6 +5,9 @@ namespace Assets.Scripts.MapGen
 {
     public class HexRegion
     {
+        public RegionType Type;
+        private HexSector _centerSector;
+        private int _planetCount;
         int X, Y;
         public List<HexSector> ChildSectors;
         List<Vector2> ZoneCoords
@@ -45,6 +48,10 @@ namespace Assets.Scripts.MapGen
 
                 var hexSector = new HexSector(xCoord, yCoord, this);
                 ChildSectors.Add(hexSector);
+                if (coord.x == 1 && coord.y == 2)
+                {
+                    _centerSector = hexSector;
+                }
             }
         }
     }

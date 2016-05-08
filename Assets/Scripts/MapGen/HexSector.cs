@@ -3,11 +3,13 @@ using UnityEngine;
 
 namespace Assets.Scripts.MapGen
 {
-    public class HexSector {
-
+    public class HexSector
+    {
+        public SectorType Type;
         public bool IsEven;
         public int X, Y;
         public List<HexTile> ChildTiles;
+        public HexTile CenterTile;
         public HexRegion ParentRegion;
         
         public static GameObject HexPrefab
@@ -122,7 +124,13 @@ namespace Assets.Scripts.MapGen
                 tile.SetId();
                 hexObject.name = (tile.X+", "+tile.Y);
                 hexObject.transform.parent = MapGen.Map.transform;
+                if (coord.x == 4 && coord.y == 4)
+                {
+                    CenterTile = tile;
+                }
             }
         }
+
+        
     }
 }

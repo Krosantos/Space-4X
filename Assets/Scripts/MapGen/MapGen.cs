@@ -26,6 +26,24 @@ namespace Assets.Scripts.MapGen
                 zoneCoords.Add(new Vector2(1, 1));
                 zoneCoords.Add(new Vector2(2, 1));
                 zoneCoords.Add(new Vector2(1, 2));
+
+                /*
+                zoneCoords.Add(new Vector2(3, 1));
+                zoneCoords.Add(new Vector2(4, 1));
+                zoneCoords.Add(new Vector2(2, 2));
+                zoneCoords.Add(new Vector2(2, 3));
+                zoneCoords.Add(new Vector2(3, 2));
+                zoneCoords.Add(new Vector2(4, 2));
+                zoneCoords.Add(new Vector2(3, 3));
+                
+                zoneCoords.Add(new Vector2(0, 3));
+                zoneCoords.Add(new Vector2(1, 3));
+                zoneCoords.Add(new Vector2(-1, 4));
+                zoneCoords.Add(new Vector2(-1, 5));
+                zoneCoords.Add(new Vector2(0, 4));
+                zoneCoords.Add(new Vector2(1, 4));
+                zoneCoords.Add(new Vector2(0, 5));
+                */
             }
             else
             {
