@@ -25,7 +25,7 @@ namespace Assets.Scripts.MapGen
             HexTile.ParentMap = new HexMap(XZones*30,YZones*30);
 
             var zoneCoords = new List<Vector2>();
-            if (setting.Spiral)
+            if (true)
             {
                 zoneCoords.Add(new Vector2(1, 0));
                 zoneCoords.Add(new Vector2(2, 0));
@@ -35,7 +35,7 @@ namespace Assets.Scripts.MapGen
                 zoneCoords.Add(new Vector2(2, 1));
                 zoneCoords.Add(new Vector2(1, 2));
 
-                /*
+                
                 zoneCoords.Add(new Vector2(3, 1));
                 zoneCoords.Add(new Vector2(4, 1));
                 zoneCoords.Add(new Vector2(2, 2));
@@ -43,7 +43,7 @@ namespace Assets.Scripts.MapGen
                 zoneCoords.Add(new Vector2(3, 2));
                 zoneCoords.Add(new Vector2(4, 2));
                 zoneCoords.Add(new Vector2(3, 3));
-                
+                /*
                 zoneCoords.Add(new Vector2(0, 3));
                 zoneCoords.Add(new Vector2(1, 3));
                 zoneCoords.Add(new Vector2(-1, 4));
@@ -66,7 +66,7 @@ namespace Assets.Scripts.MapGen
 
             var regionList = zoneCoords.Select(coord => new HexRegion((int) coord.x, (int) coord.y)).ToList();
 
-            regionList.AssignRegion(setting);
+            //regionList.AssignAllRegions(setting);
 
         }
     }

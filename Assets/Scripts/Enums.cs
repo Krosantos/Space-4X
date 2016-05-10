@@ -41,6 +41,7 @@ public enum MapState
 
 public enum RegionType
 {
+    Unassigned,
     SolarSystem,
     Asteroids,
     Riches,
@@ -52,6 +53,7 @@ public enum RegionType
 
 public enum SectorType
 {
+    Unassigned,
     SystemCenter,
     Asteroids,
     Planet,

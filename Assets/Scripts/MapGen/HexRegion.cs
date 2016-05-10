@@ -9,7 +9,7 @@ namespace Assets.Scripts.MapGen
         private HexSector _centerSector;
         private int _richnessIndex;
         private int _planetCount;
-        int X, Y;
+        public int X, Y;
         public List<HexSector> ChildSectors;
         List<Vector2> ZoneCoords
         {
