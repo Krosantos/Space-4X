@@ -57,7 +57,7 @@ namespace Assets.Scripts.Networking
                 var mapGen = new MapGen.MapGen();
                 mapGen.XZones = 4;
                 mapGen.YZones = 4;
-                mapGen.Launch(true);
+                mapGen.Launch(null);
                 Debug.Log("Map made! Sending it to the server.");
                 Singleton<MonoBehaviour>.Instance.StartCoroutine(SendChunksToServer(this));
             }

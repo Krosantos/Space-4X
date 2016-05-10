@@ -44,6 +44,7 @@ public enum RegionType
     SolarSystem,
     Asteroids,
     Riches,
+    Dead,
     Sneaky,
     Mixed,
     PirateMaybe

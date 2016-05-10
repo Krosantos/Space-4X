@@ -1,8 +1,16 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Assets.Scripts.MapGen
 {
+    public class MapSetting
+    {
+        public bool Spiral;
+        public int PlayerCount;
+        public int RichnessTotal;
+        public int MixedScore, AsteroidScore, IonScore, DeadspaceScore;
+    }
     public class MapGen {
 
         public int XZones, YZones;
@@ -12,12 +20,12 @@ namespace Assets.Scripts.MapGen
         }
         public static GameObject Map;
 
-        public void Launch (bool useSpiralPattern) {
+        public void Launch (MapSetting setting) {
             Map = new GameObject {name = "Map"};
             HexTile.ParentMap = new HexMap(XZones*30,YZones*30);
 
             var zoneCoords = new List<Vector2>();
-            if (useSpiralPattern)
+            if (setting.Spiral)
             {
                 zoneCoords.Add(new Vector2(1, 0));
                 zoneCoords.Add(new Vector2(2, 0));
@@ -56,10 +64,10 @@ namespace Assets.Scripts.MapGen
                 }
             }
 
-            foreach (var coord in zoneCoords)
-            {
-                new HexRegion((int)coord.x, (int)coord.y);
-            }
+            var regionList = zoneCoords.Select(coord => new HexRegion((int) coord.x, (int) coord.y)).ToList();
+
+            regionList.AssignRegion(setting);
+
         }
     }
 }

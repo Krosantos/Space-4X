@@ -5,6 +5,7 @@ public class MapGenTest : MonoBehaviour
 {
 
     public bool UseSpiral;
+    public int PlayerCount;
     public MapGen MapGen;
 
     void Awake()
@@ -14,6 +15,6 @@ public class MapGenTest : MonoBehaviour
             XZones = 6,
             YZones = 4
         };
-        MapGen.Launch(UseSpiral);
+        MapGen.Launch(null);
     }
 }

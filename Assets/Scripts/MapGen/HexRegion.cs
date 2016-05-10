@@ -7,6 +7,7 @@ namespace Assets.Scripts.MapGen
     {
         public RegionType Type;
         private HexSector _centerSector;
+        private int _richnessIndex;
         private int _planetCount;
         int X, Y;
         public List<HexSector> ChildSectors;
