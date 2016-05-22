@@ -113,12 +113,11 @@ namespace Assets.Scripts.MapGen
                     hexObject = Object.Instantiate(HexPrefab, new Vector3(tileXPos, tileYPos + 0.5f, 0), Quaternion.identity) as GameObject;
                 }
                 var tile = hexObject.GetComponent<HexTile>();
-
                 
                 HexTile.ParentMap.TileList.Add(tile);
                 ChildTiles.Add(tile);
                 tile.ParentSector = this;
-                HexTile.TileMap[tileXCord, tileYCord] = tile;
+                //HexTile.TileMap[tileXCord, tileYCord] = tile;
                 tile.X = tileXCord;
                 tile.Y = tileYCord;
                 tile.SetId();

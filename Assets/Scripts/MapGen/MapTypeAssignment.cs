@@ -9,8 +9,22 @@ namespace Assets.Scripts.MapGen
         public static void AssignAllRegions(this List<HexRegion> regions, MapSetting setting)
         {
             //For each player, find a region with no neighbouring players.
-            while (PushStartRegions(regions, setting.PlayerCount)) { }
-
+            while(PushStartRegions(regions, setting.PlayerCount)) { }
+            foreach (var region in regions)
+            {
+                if (region.Type == RegionType.SolarSystem)
+                {
+                    Debug.Log("Region X: "+region.X+" Y: "+region.Y);
+                    foreach (var sector in region.ChildSectors)
+                    {
+                        foreach (var tile in sector.ChildTiles)
+                        {
+                          //  tile.TintColor = Color.cyan;
+                        }
+                    }
+                }
+                
+            }
             //For each type with hard counts (e.g., you want minimum 1 region of type "riches"), force an assignment.
             
 
@@ -24,10 +38,13 @@ namespace Assets.Scripts.MapGen
             var yMin = regions.Select(r => r.Y).Min();
             var xRange = regions.Select(r => r.X).Max() - xMin;
             var yRange = regions.Select(r => r.Y).Max() - yMin;
-            var regionMap = new HexRegion[xRange, yRange];
+            var regionMap = new HexRegion[xRange+1, yRange+1];
             foreach (var region in regions)
             {
                 regionMap[region.X - xMin, region.Y - yMin] = region;
+                region.X -= xMin;
+                region.Y -= yMin;
+                region.Type = RegionType.Unassigned;
             }
             
             //So, this is an ugly, brute force way of working through the problem. It'll place things randomly
@@ -44,7 +61,7 @@ namespace Assets.Scripts.MapGen
                     var whiteList = regions.Where(r => r.Type != RegionType.SolarSystem && !blackList.Contains(r)).ToList();
                     if (whiteList.Count <= 0)
                     {
-                        return false;
+                        return true;
                     }
                     var index = Random.Range(0, whiteList.Count);
                     var possibleLocation = whiteList[index];
@@ -55,21 +72,11 @@ namespace Assets.Scripts.MapGen
                     else
                     {
                         possibleLocation.Type = RegionType.SolarSystem;
-
-                        //For debugging!
-                        foreach (var childSector in possibleLocation.ChildSectors)
-                        {
-                            foreach (var tile in childSector.ChildTiles)
-                            {
-                                tile.TintColor = Color.cyan;
-                            }
-                        }
-
                         isSet = true;
                     }
                 }
             }
-            return true;
+            return false;
 
 
         }
@@ -84,37 +91,40 @@ namespace Assets.Scripts.MapGen
         public static bool NeighbourIsType(this HexRegion region, HexRegion[,] map, RegionType type)
         {
             var neighbourList = new List<HexRegion>();
-
-            //Upper Left
-            if (region.X % 2 == 0 && region.X > 0)
+            var x = region.X;
+            var y = region.Y;
+            //UL
+            if (x > 0 && y + 1 < map.GetLength(1))
             {
-                if (map[region.X - 1, region.Y] != null) neighbourList.Add(map[region.X - 1, region.Y]);
+                if (map[x - 1, y + 1] != null) neighbourList.Add(map[x - 1, y + 1]);
             }
-            else if (region.X > 0 && region.Y + 1 < map.GetLength(1))
+            //LL
+            if (x > 0)
             {
-                if (map[region.X - 1, region.Y + 1] != null) neighbourList.Add(map[region.X - 1, region.Y + 1]);
+                if (map[x - 1, y] != null) neighbourList.Add(map[x - 1, y]);
+            }
+            //UR
+            if (y + 1 < map.GetLength(1))
+            {
+                if (map[x, y + 1] != null) neighbourList.Add(map[x, y + 1]);
+            }
+            //DL
+            if (y > 0)
+            {
+                if (map[x, y - 1] != null) neighbourList.Add(map[x, y - 1]);
+            }
+            //RR
+            if (x + 1 < map.GetLength(1))
+            {
+                if (map[x + 1, y] != null) neighbourList.Add(map[x + 1, y]);
+            }
+            //DR
+            if (x + 1 < map.GetLength(1) && y > 0)
+            {
+                if (map[x + 1, y - 1] != null) neighbourList.Add(map[x + 1, y - 1]);
             }
 
-            //Upper
-            if (region.Y +1 < map.GetLength(1))
-            {
-                if (map[region.X, region.Y + 1] != null) neighbourList.Add(map[region.X, region.Y + 1]);
-            }
-
-            //Upper Right
-            if (region.X % 2 == 0 && region.X +1 < map.GetLength(0))
-            {
-                if (map[region.X + 1, region.Y] != null) neighbourList.Add(map[region.X + 1, region.Y]);
-            }
-            else if (region.X % 2 != 0 && region.X +1 < map.GetLength(0) && region.Y + 1 < map.GetLength(1))
-            {
-                if (map[region.X + 1, region.Y + 1] != null) neighbourList.Add(map[region.X + 1, region.Y + 1]);
-            }
-
-            //Lower Left
-            
-
-            return neighbourList.Any(x=>x.Type == type);
+            return neighbourList.Any(r=>r.Type == type);
         }
     }
 }

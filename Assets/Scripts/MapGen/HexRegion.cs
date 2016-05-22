@@ -31,6 +31,8 @@ namespace Assets.Scripts.MapGen
 
         public HexRegion(int x, int y)
         {
+            X = x;
+            Y = y;
             ChildSectors = new List<HexSector>();
             foreach (var coord in ZoneCoords)
             {
@@ -42,7 +44,7 @@ namespace Assets.Scripts.MapGen
                 }
                 if (x % 2 != 0 || y % 2 != 0)
                 {
-                    if ((int)coord.x % 2 != 0) yCoord--;
+                   if ((int)coord.x % 2 != 0) yCoord--;
                 }
                 yCoord -= x / 2;
                 yCoord -= y / 2;
