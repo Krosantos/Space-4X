@@ -19,7 +19,7 @@ namespace Assets.Scripts.MapGen
                     {
                         foreach (var tile in sector.ChildTiles)
                         {
-                          //  tile.TintColor = Color.cyan;
+                            tile.TintColor = Color.cyan;
                         }
                     }
                 }
@@ -38,12 +38,12 @@ namespace Assets.Scripts.MapGen
             var yMin = regions.Select(r => r.Y).Min();
             var xRange = regions.Select(r => r.X).Max() - xMin;
             var yRange = regions.Select(r => r.Y).Max() - yMin;
-            var regionMap = new HexRegion[xRange+1, yRange+1];
+            var regionMap = new HexRegion[xRange+2, yRange+2];
             foreach (var region in regions)
             {
-                regionMap[region.X - xMin, region.Y - yMin] = region;
                 region.X -= xMin;
                 region.Y -= yMin;
+                regionMap[region.X, region.Y] = region;
                 region.Type = RegionType.Unassigned;
             }
             
@@ -93,8 +93,11 @@ namespace Assets.Scripts.MapGen
             var neighbourList = new List<HexRegion>();
             var x = region.X;
             var y = region.Y;
+            Debug.Log("map is: "+map.GetLength(0)+", "+map.GetLength(1));
+            Debug.Log("I am coord "+x+", "+y);
+
             //UL
-            if (x > 0 && y + 1 < map.GetLength(1))
+            if (x > 0 && y < map.GetLength(1))
             {
                 if (map[x - 1, y + 1] != null) neighbourList.Add(map[x - 1, y + 1]);
             }
@@ -104,7 +107,7 @@ namespace Assets.Scripts.MapGen
                 if (map[x - 1, y] != null) neighbourList.Add(map[x - 1, y]);
             }
             //UR
-            if (y + 1 < map.GetLength(1))
+            if (y < map.GetLength(1))
             {
                 if (map[x, y + 1] != null) neighbourList.Add(map[x, y + 1]);
             }
@@ -114,12 +117,12 @@ namespace Assets.Scripts.MapGen
                 if (map[x, y - 1] != null) neighbourList.Add(map[x, y - 1]);
             }
             //RR
-            if (x + 1 < map.GetLength(1))
+            if (x < map.GetLength(1))
             {
                 if (map[x + 1, y] != null) neighbourList.Add(map[x + 1, y]);
             }
             //DR
-            if (x + 1 < map.GetLength(1) && y > 0)
+            if (x < map.GetLength(1) && y > 0)
             {
                 if (map[x + 1, y - 1] != null) neighbourList.Add(map[x + 1, y - 1]);
             }

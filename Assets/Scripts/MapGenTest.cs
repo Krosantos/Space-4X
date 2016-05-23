@@ -5,19 +5,22 @@ public class MapGenTest : MonoBehaviour
 {
 
     public bool UseSpiral;
-    public int PlayerCount,xZone,yZone;
+    public int PlayerCount,XZone,YZone;
     public MapGen MapGen;
 
     void Awake()
     {
-        var setting = new MapSetting();
-        setting.PlayerCount = 1;
-
-        MapGen = new MapGen
+        var setting = new MapSetting
         {
-            XZones = xZone,
-            YZones = yZone
+            PlayerCount = PlayerCount,
+            Spiral = UseSpiral,
+            XZones = XZone,
+            YZones = YZone
         };
-        MapGen.Launch(setting);
+        MapGen = new MapGen();
+
+        MapGen.SpawnTiles(setting);
+        MapGen.MapTiles();
+        MapGen.AssignTypes(setting);
     }
 }

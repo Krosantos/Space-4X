@@ -117,7 +117,6 @@ namespace Assets.Scripts.MapGen
                 HexTile.ParentMap.TileList.Add(tile);
                 ChildTiles.Add(tile);
                 tile.ParentSector = this;
-                //HexTile.TileMap[tileXCord, tileYCord] = tile;
                 tile.X = tileXCord;
                 tile.Y = tileYCord;
                 tile.SetId();
