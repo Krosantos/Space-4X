@@ -11,7 +11,7 @@ namespace Assets.Scripts.MapGen
         public int PlayerCount;
         public int RichnessTotal;
         public int XZones, YZones;
-        public int MixedScore, AsteroidScore, IonScore, DeadspaceScore;
+        public int MixedScore, AsteroidScore, IonScore;
     }
     public class MapGen {
         

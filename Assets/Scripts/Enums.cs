@@ -43,9 +43,9 @@ public enum RegionType
 {
     Unassigned,
     SolarSystem,
-    Asteroids,
     Riches,
     Dead,
+    Asteroids,
     Sneaky,
     Mixed,
     PirateMaybe
