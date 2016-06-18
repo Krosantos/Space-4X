@@ -5,13 +5,16 @@ public class MapGenTest : MonoBehaviour
 {
 
     public bool UseSpiral;
-    public int PlayerCount,XZone,YZone;
+    public int PlayerCount,XZone,YZone, AsteroidScore, IonScore, MixedScore;
     public MapGen MapGen;
 
     void Awake()
     {
         var setting = new MapSetting
         {
+            AsteroidScore = AsteroidScore,
+            IonScore = IonScore,
+            MixedScore = MixedScore,
             PlayerCount = PlayerCount,
             Spiral = UseSpiral,
             XZones = XZone,

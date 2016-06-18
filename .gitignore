@@ -11,3 +11,4 @@ Temp/*
 TestBuild*
 *.pdb
 *.vs/*
+Assets/Packages/*
