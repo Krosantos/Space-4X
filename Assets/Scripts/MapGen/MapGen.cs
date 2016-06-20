@@ -91,9 +91,14 @@ namespace Assets.Scripts.MapGen
             }
         }
 
-        public void AssignTypes(MapSetting setting)
+        public void AssignRegions(MapSetting setting)
         {
             RegionList.AssignAllRegions(setting);
+        }
+
+        public void AssignSectors()
+        {
+            RegionList.AssignSectorTypes();
         }
     }
 }

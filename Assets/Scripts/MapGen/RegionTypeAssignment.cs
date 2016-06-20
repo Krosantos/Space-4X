@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Assets.Scripts.MapGen
 {
-    public static class MapTypeAssignment
+    public static class RegionTypeAssignment
     {
         public static void AssignAllRegions(this List<HexRegion> regions, MapSetting setting)
         {
@@ -48,42 +48,6 @@ namespace Assets.Scripts.MapGen
                 else if (rand >= 1 - ionChance) region.Type = RegionType.Sneaky;
                 else region.Type = RegionType.Mixed;
                 Debug.Log("Rand was "+rand+". Assigned type "+region.Type);
-            }
-
-            foreach (var region in regions)
-            {
-                Color color;
-                switch (region.Type)
-                {
-                    case RegionType.Dead:
-                        color = Color.black;
-                        break;
-                    case RegionType.Riches:
-                        color = Color.yellow;
-                        break;
-                    case RegionType.SolarSystem:
-                        color = Color.green;
-                        break;
-                    case RegionType.Asteroids:
-                        color = Color.blue;
-                      break;
-                    case RegionType.Mixed:
-                        color = Color.red;
-                      break;
-                    case RegionType.Sneaky:
-                        color = Color.gray;
-                        break;
-                    default:
-                        color = Color.white;
-                        break;
-                }
-                foreach (var sector in region.ChildSectors)
-                {
-                    foreach (var tile in sector.ChildTiles)
-                    {
-                        tile.TintColor = color;
-                    }
-                }
             }
         }
 

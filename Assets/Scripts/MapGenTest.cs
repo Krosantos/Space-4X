@@ -24,6 +24,6 @@ public class MapGenTest : MonoBehaviour
 
         MapGen.SpawnTiles(setting);
         MapGen.MapTiles();
-        MapGen.AssignTypes(setting);
+        MapGen.AssignRegions(setting);
     }
 }
