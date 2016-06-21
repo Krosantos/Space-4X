@@ -100,5 +100,10 @@ namespace Assets.Scripts.MapGen
         {
             RegionList.AssignSectorTypes();
         }
+
+        public void AssignTiles()
+        {
+            RegionList.AssignAllTiles();
+        }
     }
 }

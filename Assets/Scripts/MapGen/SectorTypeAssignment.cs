@@ -77,7 +77,7 @@ namespace Assets.Scripts.MapGen
         static void AssignAsteroidsSectors(this HexRegion region)
         {
             region.PushSectorType(Random.value >= 0.20f ? SectorType.Planet : SectorType.Asteroids);
-            region.PushSectorType(SectorType.Asteroids);
+            region.PushSectorType(Random.value >= 0.20f ? SectorType.Deadspace : SectorType.Asteroids);
             region.PushSectorType(SectorType.Asteroids);
             region.PushSectorType(SectorType.Asteroids);
             region.PushSectorType(SectorType.Asteroids);
@@ -88,7 +88,7 @@ namespace Assets.Scripts.MapGen
         static void AssignSneakySectors(this HexRegion region)
         {
             region.PushSectorType(Random.value >= 0.20f ? SectorType.Planet : SectorType.Clouds);
-            region.PushSectorType(SectorType.Clouds);
+            region.PushSectorType(Random.value >= 0.20f ? SectorType.Deadspace : SectorType.Clouds);
             region.PushSectorType(SectorType.Clouds);
             region.PushSectorType(SectorType.Clouds);
             region.PushSectorType(SectorType.Clouds);

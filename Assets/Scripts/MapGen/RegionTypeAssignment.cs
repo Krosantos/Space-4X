@@ -38,16 +38,12 @@ namespace Assets.Scripts.MapGen
             var asteroidChance =(float) setting.AsteroidScore/ (setting.AsteroidScore + setting.IonScore + setting.MixedScore);
             var ionChance = (float) setting.IonScore/ (setting.AsteroidScore + setting.IonScore + setting.MixedScore);
 
-            Debug.Log("Asteroid chance: "+asteroidChance);
-            Debug.Log("Ion Chance:" +ionChance);
-
             foreach (var region in regions.Where(x=>x.Type == RegionType.Unassigned))
             {
                 var rand = Random.value;
                 if(rand <= asteroidChance) region.Type = RegionType.Asteroids;
                 else if (rand >= 1 - ionChance) region.Type = RegionType.Sneaky;
                 else region.Type = RegionType.Mixed;
-                Debug.Log("Rand was "+rand+". Assigned type "+region.Type);
             }
         }
 
