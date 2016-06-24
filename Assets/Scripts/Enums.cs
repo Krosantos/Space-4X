@@ -7,9 +7,9 @@
     AsteroidX,
     Star,
     Planet,
-    BlackHole,
+    Blackhole,
     Hyperspace,
-    DeadSpace,
+    Deadspace,
     IonCloud,
     Station
 }

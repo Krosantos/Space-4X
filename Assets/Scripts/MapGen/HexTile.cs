@@ -29,6 +29,12 @@ namespace Assets.Scripts.MapGen
         public GameObject Tint;
         public int X, Y, Id;
 
+        public Sprite Sprite
+        {
+            get { return gameObject.GetComponent<SpriteRenderer>().sprite; }
+            set { gameObject.GetComponent<SpriteRenderer>().sprite = value; }
+        }
+
         public HexRegion ParentRegion
         {
             get { return ParentSector.ParentRegion; }
