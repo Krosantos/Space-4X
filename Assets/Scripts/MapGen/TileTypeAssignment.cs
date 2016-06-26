@@ -20,32 +20,36 @@ namespace Assets.Scripts.MapGen
                 switch (sector.Type)
                 {
                     case SectorType.Anomaly:
-                        sector.SeedTerrain(Terrain.Deadspace, 4,0.75f,0.33f);
-                        sector.SeedTerrain(Terrain.IonCloud, 3, 0.75f, 0.4f, canOverwrite: true);
+                        sector.SeedTerrain(Terrain.Deadspace, 4,0.33f, 0.75f);
+                        sector.SeedTerrain(Terrain.IonCloud, 3, 0.4f, 0.75f, canOverwrite: true);
                         sector.SeedAsteroids(3,0.75f,0.85f,0.2f,canOverwrite: true);
                         sector.CenterTile.Terrain = Terrain.Blackhole;
                         break;
                     case SectorType.Asteroids:
-
+                        sector.SeedAsteroids(6,0.85f,0.95f,0.15f);
                         break;
+                    case SectorType.Unassigned:
                     case SectorType.Blend:
-
+                        sector.SeedAsteroids(3,0.45f,0.65f,0.1f,initialStrength:0.7f);
+                        sector.SeedTerrain(Terrain.IonCloud, 3,0.45f);
                         break;
                     case SectorType.Clouds:
+                        sector.SeedTerrain(Terrain.IonCloud, 4, 0.1f);
                         break;
                     case SectorType.Deadspace:
-
+                        sector.SeedTerrain(Terrain.Deadspace, 4, 0.15f);
                         break;
                     case SectorType.Planet:
-
+                        sector.SeedAsteroids(3, 0.45f, 0.65f, 0.1f, initialStrength: 0.7f);
+                        sector.SeedTerrain(Terrain.IonCloud, 3, 0.33f,0.85f);
+                        sector.PlaceTile(Terrain.Planet,true);
                         break;
                     case SectorType.SystemCenter:
-
+                        sector.SeedAsteroids(3, 0.45f, 0.65f, 0.1f, initialStrength: 0.7f);
+                        sector.SeedTerrain(Terrain.IonCloud, 3, 0.33f,0.85f);
+                        sector.PlaceTile(Terrain.Planet,true);
                         sector.CenterTile.Terrain = Terrain.Star;
                     break;
-                    default:
-
-                        break;
                 }
 
                 foreach (var tile in sector.ChildTiles)
@@ -57,7 +61,7 @@ namespace Assets.Scripts.MapGen
 
         //Generic function to spread terrain. You can use the combination of spread and carry chance to play around with non-contiguous results.
         // canBreakOut can be used to constrain spread to just this sector.
-        private static void SeedTerrain(this HexSector sector, Terrain terrain, int passes, float spreadChance, float carryChance = 1f, bool canBreakOut = true, bool canOverwrite = false)
+        private static void SeedTerrain(this HexSector sector, Terrain terrain, int passes, float convertChance, float spreadChance = 1f, bool canBreakOut = true, bool canOverwrite = false)
         {
             //Pick a random place to start.
             var emptyTiles = sector.ChildTiles.Where(x => x.Terrain == Terrain.Space).ToList();
@@ -77,7 +81,7 @@ namespace Assets.Scripts.MapGen
                     //Then, it has a chance to get assigned the terrain, or to pass on its genes to its own neighbours.
                     tilesToAdd.AddRange(tile.Neighbours.Where(x=> !closedList.Contains(x) && Random.value <= spreadChance).ToList());
 
-                    if (Random.value <= carryChance && (canBreakOut || tile.ParentSector == seedTile.ParentSector) && (canOverwrite || tile.Terrain == Terrain.Space)) tile.Terrain = terrain;
+                    if (Random.value <= convertChance && (canBreakOut || tile.ParentSector == seedTile.ParentSector) && (canOverwrite || tile.Terrain == Terrain.Space)) tile.Terrain = terrain;
                     tilesToRemove.Add(tile);
                     closedList.Add(tile);
                 }
@@ -93,16 +97,16 @@ namespace Assets.Scripts.MapGen
         }
 
         //This works like the generic SeedTerrain function, but the farther you get from the seed, the smaller the asteroids get.
-        private static void SeedAsteroids(this HexSector sector, int passes, float spreadChance, float decayRate, float maxShrinkChance, bool canBreakOut = true, bool canOverwrite = false)
+        private static void SeedAsteroids(this HexSector sector, int passes, float spreadChance, float decayRate, float maxShrinkChance, bool canBreakOut = true, bool canOverwrite = false, float initialStrength = 1f)
         {
             var emptyTiles = sector.ChildTiles.Where(x => x.Terrain == Terrain.Space).ToList();
             var seedTile = emptyTiles[Random.Range(0, emptyTiles.Count)];
 
             var openList = new List<HexTile> { seedTile };
             var closedList = new List<HexTile> { seedTile };
-            var asteroidSize = new Dictionary<HexTile,float> {{seedTile,1f}};
+            var asteroidSize = new Dictionary<HexTile,float> {{seedTile,initialStrength}};
 
-            var decayIndex = 1f;
+            var decayIndex = initialStrength;
             for (var i = 0; i < passes; i++)
             {
                 var tilesToAdd = new List<HexTile>();
