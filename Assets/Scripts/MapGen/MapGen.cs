@@ -22,6 +22,29 @@ namespace Assets.Scripts.MapGen
         }
         public static GameObject Map;
 
+        public void Launch(MapSetting setting)
+        {
+            Singleton<MonoBehaviour>.Instance.StartCoroutine(GenerateMap(setting));
+        }
+
+        IEnumerator<WaitForSeconds> GenerateMap(MapSetting setting)
+        {
+            SpawnTiles(setting);
+            Debug.Log("From the formless void, she wrought the expanse of space.");
+            yield return new WaitForSeconds(0.05f);
+            MapTiles();
+            Debug.Log("And into this expanse she whispered Order.");
+            yield return new WaitForSeconds(0.05f);
+            AssignRegions(setting);
+            Debug.Log("And each place was given a Name.");
+            yield return new WaitForSeconds(0.05f);
+            AssignSectors();
+            Debug.Log("And from one thing sprung many things, all of them with Names of their own.");
+            yield return new WaitForSeconds(0.05f);
+            AssignTiles();
+            Debug.Log("And to Name a thing is to shape it, and the world heaved into shape.");
+        }
+
         public void SpawnTiles (MapSetting setting) {
             Map = new GameObject {name = "Map"};
             HexTile.ParentMap = new HexMap();
@@ -45,7 +68,7 @@ namespace Assets.Scripts.MapGen
                 zoneCoords.Add(new Vector2(3, 2));
                 zoneCoords.Add(new Vector2(4, 2));
                 zoneCoords.Add(new Vector2(3, 3));
-                /*
+                
                 zoneCoords.Add(new Vector2(0, 3));
                 zoneCoords.Add(new Vector2(1, 3));
                 zoneCoords.Add(new Vector2(-1, 4));
@@ -53,7 +76,7 @@ namespace Assets.Scripts.MapGen
                 zoneCoords.Add(new Vector2(0, 4));
                 zoneCoords.Add(new Vector2(1, 4));
                 zoneCoords.Add(new Vector2(0, 5));
-                */
+                
             }
             else
             {

@@ -5,7 +5,7 @@ public class MapGenTest : MonoBehaviour
 {
 
     public bool UseSpiral;
-    public int PlayerCount,XZone,YZone, AsteroidScore, IonScore, MixedScore;
+    public int PlayerCount,XZone,YZone, AsteroidScore, IonScore, MixedScore, Richness;
     public MapGen MapGen;
 
     void Awake()
@@ -18,14 +18,18 @@ public class MapGenTest : MonoBehaviour
             PlayerCount = PlayerCount,
             Spiral = UseSpiral,
             XZones = XZone,
-            YZones = YZone
+            YZones = YZone,
+            RichnessTotal = Richness
         };
         MapGen = new MapGen();
 
+        MapGen.Launch(setting);
+        /*
         MapGen.SpawnTiles(setting);
         MapGen.MapTiles();
         MapGen.AssignRegions(setting);
         MapGen.AssignSectors();
         MapGen.AssignTiles();
+        */
     }
 }
