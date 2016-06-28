@@ -8,6 +8,11 @@ namespace Assets.Scripts
         public int Quantity, RegenQuantity, MaxQuantity;
         public int RegenTurns, TurnsToRegen;
 
+        public Resource(ResourceType type)
+        {
+            Type = type;
+        }
+
         public Resource(int resourceType, int resourceQuantity) {
             Type = (ResourceType)resourceType;
             Quantity = resourceQuantity;

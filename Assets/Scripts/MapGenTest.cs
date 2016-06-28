@@ -19,7 +19,7 @@ public class MapGenTest : MonoBehaviour
             Spiral = UseSpiral,
             XZones = XZone,
             YZones = YZone,
-            RichnessTotal = Richness
+            RichnessScore = Richness
         };
         MapGen = new MapGen();
 

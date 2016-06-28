@@ -16,12 +16,14 @@
 public enum ResourceType
 {
     Nothing,
-    Water,
-    Iron,
+    Hydrocarbons,
+    Polymers,
     Aluminum,
-    Dysprosium,
-    Neon,
-    Xenon
+    NuclearMaterial,
+    Water,
+    HeavyGas,
+    DarkMatter,
+    NeutronMass
 }
 
 public enum ShipScale

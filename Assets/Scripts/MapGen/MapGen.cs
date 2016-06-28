@@ -9,7 +9,7 @@ namespace Assets.Scripts.MapGen
     {
         public bool Spiral;
         public int PlayerCount;
-        public int RichnessTotal;
+        public int RichnessScore;
         public int XZones, YZones;
         public int MixedScore, AsteroidScore, IonScore;
     }
