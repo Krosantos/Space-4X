@@ -120,6 +120,7 @@ namespace Assets.Scripts.MapGen
                 tile.ParentSector = this;
                 tile.X = tileXCord;
                 tile.Y = tileYCord;
+                tile.Resource = new Resource(0,0);
                 tile.SetId();
                 hexObject.name = (tile.X+", "+tile.Y);
                 hexObject.transform.parent = MapGen.Map.transform;

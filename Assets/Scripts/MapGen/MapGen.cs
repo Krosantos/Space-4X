@@ -128,5 +128,10 @@ namespace Assets.Scripts.MapGen
         {
             RegionList.AssignAllTiles();
         }
+
+        public void AssignResources(MapSetting setting)
+        {
+            RegionList.AssignResources(setting);
+        }
     }
 }
