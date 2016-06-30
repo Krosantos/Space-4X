@@ -8,7 +8,6 @@ namespace Assets.Scripts.MapGen
     public static class ResourceAssignment
     {
         //Why no polymers or hydrocarbons, you ask? Those get made in stations/on planets.
-
         public static Dictionary<ResourceType, int> ResourceCost
         {
             get
@@ -26,23 +25,7 @@ namespace Assets.Scripts.MapGen
             }
         }
 
-        static Dictionary<RegionType, int> MaxRichness
-        {
-            get
-            {
-                var result = new Dictionary<RegionType, int>
-                {
-                    {RegionType.SolarSystem, 8},
-                    {RegionType.Dead, 3},
-                    {RegionType.Asteroids, 5},
-                    {RegionType.Mixed, 5},
-                    {RegionType.Sneaky, 5},
-                    {RegionType.Riches, 10}
-                };
-                return result;
-            }
-        }
-
+        //We'll loop through this to distribute resources in the right order/proportion.
         static List<ResourceType> ResourceOrder
         {
             get
@@ -74,19 +57,72 @@ namespace Assets.Scripts.MapGen
             }
         }
 
+        //This dictates the kind of sector a given resource can appear in.
+        static Dictionary<ResourceType, List<SectorType>> ResourceSpawnTypes
+        {
+            get
+            {
+                var result = new Dictionary<ResourceType, List<SectorType>>
+                {
+                    {ResourceType.Aluminum,new List<SectorType> {SectorType.Asteroids, SectorType.Blend, SectorType.Planet}},
+                    {ResourceType.Water, new List<SectorType> {SectorType.Clouds, SectorType.Blend, SectorType.Planet}},
+                    {ResourceType.NuclearMaterial, new List<SectorType> {SectorType.Asteroids, SectorType.Blend}},
+                    {ResourceType.HeavyGas, new List<SectorType> {SectorType.Clouds}},
+                    {ResourceType.DarkMatter, new List<SectorType> {SectorType.Anomaly}},
+                    {ResourceType.NeutronMass, new List<SectorType> {SectorType.Deadspace}}
+                };
+                return result;
+            }
+        } 
+
+        //Main entry point into this entire mess.
         public static void AssignResources(this List<HexRegion> inputRegions, MapSetting setting)
         {
-            //First, put in a baseline quantity of resources in player solar systems. This ignores richness score.
-            for (var x = 0; x < setting.PlayerCount; x++)
+            var allSectors = new Dictionary<HexSector,int>();
+            foreach (var sector in inputRegions.SelectMany(region => region.ChildSectors))
             {
-                var poorestRegion = inputRegions.Where(y => y.Type == RegionType.SolarSystem && y.RichnessScore < MaxRichness[y.Type]).OrderBy(y => y.RichnessScore).First() ??
-                               inputRegions.Where(y => y.Type == RegionType.SolarSystem).OrderBy(y => y.RichnessScore).First();
-                poorestRegion.DistributeToSpecifiedRegion(1,ResourceType.Water,SectorType.Blend);
-                poorestRegion.DistributeToSpecifiedRegion(1, ResourceType.Water, SectorType.Planet);
-                poorestRegion.DistributeToSpecifiedRegion(1, ResourceType.Aluminum, SectorType.Blend);
-                poorestRegion.DistributeToSpecifiedRegion(1, ResourceType.Aluminum, SectorType.Planet);
-                poorestRegion.DistributeToSpecifiedRegion(1,ResourceType.NuclearMaterial, SectorType.Asteroids);
-                poorestRegion.DistributeToSpecifiedRegion(1,ResourceType.HeavyGas, SectorType.Clouds);
+                int richness;
+                switch (sector.Type)
+                {
+                    case SectorType.Anomaly:
+                        richness = -10;
+                        break;
+                    case SectorType.Deadspace:
+                        richness = -10;
+                        break;
+                    case SectorType.SystemCenter:
+                        richness = 0;
+                        break;
+                    case SectorType.Asteroids:
+                        richness = -5;
+                        break;
+                    case SectorType.Clouds:
+                        richness = -5;
+                        break;
+                    case SectorType.Blend:
+                        richness = -3;
+                        break;
+                    case SectorType.Planet:
+                        richness = -4;
+                        break;
+                    case SectorType.Unassigned:
+                        richness = 0;
+                        break;
+                    default:
+                        richness = 0;
+                        break;
+                }
+                //Liiiiiittle bonus for rich regions.
+                if (sector.ParentRegion.Type == RegionType.Riches && richness != 0) richness -= 2;
+                allSectors.Add(sector,richness);
+            }
+
+            //First, put in a baseline quantity of resources in player solar systems.
+            foreach (var region in inputRegions.Where(x=>x.Type == RegionType.SolarSystem))
+            {
+                region.DistributeSystemResources(ResourceType.Aluminum, allSectors);
+                region.DistributeSystemResources(ResourceType.Water, allSectors);
+                region.DistributeSystemResources(Random.value < 0.5f ? ResourceType.NuclearMaterial : ResourceType.HeavyGas, allSectors);
             }
 
             // Now, pachinko bonus resources all around the galaxy until you run out of points to assign.
@@ -98,47 +134,47 @@ namespace Assets.Scripts.MapGen
             var order = ResourceOrder;
             while (totalRichness >= 0)
             {
-                //TODO:make that list a dictionary of region type where each resource should go.
-                //Maybe give it a preference for certain regions?
+                var typeToAssign = order[orderIndex];
+                totalRichness -= EvenlyDistributeResource(allSectors, typeToAssign);
                 orderIndex++;
-                totalRichness--;
             }
         }
 
-        public static int EvenlyDistributeResources(this List<HexRegion> inputRegions,int passes, ResourceType type, RegionType regionType)
+        //Hardcoded method to make sure each starting area has a bare minimum of resources.
+        static void DistributeSystemResources(this HexRegion region, ResourceType type, Dictionary<HexSector,int> scoreTracking )
         {
-            var result = 0;
 
-            // We want the lowest scoring region, ideally which hasn't passed the max.
-            var targetRegion = inputRegions.Where(y => y.Type == regionType && y.RichnessScore < MaxRichness[y.Type]).OrderBy(y => y.RichnessScore).First() ??
-                               inputRegions.Where(y => y.Type == regionType).OrderBy(y => y.RichnessScore).First();
+            var allSectors = region.ChildSectors.ToDictionary(sector => sector, sector => 0);
+            var targetSector =
+                allSectors.Keys.Where(x => ResourceSpawnTypes[type].Contains(x.Type))
+                    .OrderBy(x => allSectors[x])
+                    .First();
 
-            for (var x = 0; x < passes; x++)
-            {
-                var targetSector = targetRegion.ChildSectors.OrderBy(y => y.RichnessScore).First();
-                var possibleTiles = targetSector.ChildTiles.Where(y => y.Terrain == Terrain.Space && y.Resource.Type == ResourceType.Nothing).ToList();
-                if (possibleTiles.Count < 1) continue;
-                possibleTiles[Random.Range(0, possibleTiles.Count)].Resource = new Resource(type);
-                targetRegion.RichnessScore += ResourceCost[type];
-                targetSector.RichnessScore += ResourceCost[type];
-                result =+ ResourceCost[type];
-            }
-            return result;
+            //Find a nice empty tile to populate.
+            var possibleTiles = targetSector.ChildTiles.Where(x => x.Resource.Type == ResourceType.Nothing).ToList();
+
+            possibleTiles[Random.Range(0, possibleTiles.Count)].Resource = new Resource(type);
+
+            scoreTracking[targetSector] += ResourceCost[type];
         }
 
-        public static void DistributeToSpecifiedRegion(this HexRegion region, int passes, ResourceType type, SectorType sectorPreference)
+        // Evenly parse out resources to the right type of region.
+        static int EvenlyDistributeResource(Dictionary<HexSector, int> allSectors, ResourceType type)
         {
-            for (var x = 0; x < passes; x++)
-            {
-                var targetSector =
-                    region.ChildSectors.Where(y => y.Type == sectorPreference).OrderBy(y => y.RichnessScore).First() ??
-                    region.ChildSectors.OrderBy(y => y.RichnessScore).First();
-                var possibleTiles = targetSector.ChildTiles.Where(y => y.Terrain == Terrain.Space && y.Resource.Type == ResourceType.Nothing).ToList();
-                if (possibleTiles.Count < 1) continue;
-                possibleTiles[Random.Range(0, possibleTiles.Count)].Resource = new Resource(type);
-                region.RichnessScore += ResourceCost[type];
-                targetSector.RichnessScore += ResourceCost[type];
-            }
+            //Find the most resource-poor sector of the appropriate type, and stick this resource in there somewhere.
+            var targetSector =
+                allSectors.Keys.Where(x => ResourceSpawnTypes[type].Contains(x.Type))
+                    .OrderBy(x => allSectors[x])
+                    .First();
+
+            //Find a nice empty tile to populate.
+            var possibleTiles = targetSector.ChildTiles.Where(x => x.Resource.Type == ResourceType.Nothing).ToList();
+
+            possibleTiles[Random.Range(0,possibleTiles.Count)].Resource = new Resource(type);
+
+            allSectors[targetSector] += ResourceCost[type];
+            return ResourceCost[type];
         }
+
     }
 }

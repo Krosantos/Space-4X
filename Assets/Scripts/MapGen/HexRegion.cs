@@ -7,7 +7,6 @@ namespace Assets.Scripts.MapGen
     {
         public RegionType Type;
         public HexSector CenterSector;
-        public int RichnessScore = 0;
         public int X, Y;
         public List<HexSector> ChildSectors;
         List<Vector2> ZoneCoords

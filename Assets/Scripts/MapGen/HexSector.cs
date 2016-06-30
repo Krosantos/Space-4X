@@ -8,7 +8,6 @@ namespace Assets.Scripts.MapGen
         public SectorType Type;
         public bool IsEven;
         public int X, Y;
-        public int RichnessScore = 0;
         public List<HexTile> ChildTiles;
         public HexTile CenterTile;
         public HexRegion ParentRegion;
