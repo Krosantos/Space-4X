@@ -1,5 +1,6 @@
 ﻿#region
 
+using System.Collections;
 using System.Collections.Generic;
 using Assets.Scripts.MapGen;
 using UnityEngine;
@@ -55,11 +56,19 @@ namespace Assets.Scripts.Networking
             {
                 Debug.Log("Server wants me to make a map.");
                 var mapGen = new MapGen.MapGen();
-                //mapGen.XZones = 4;
-                //mapGen.YZones = 4;
-                mapGen.SpawnTiles(null);
-                Debug.Log("Map made! Sending it to the server.");
-                Singleton<MonoBehaviour>.Instance.StartCoroutine(SendChunksToServer(this));
+                var setting = new MapSetting
+                {
+                    AsteroidScore = 1,
+                    IonScore = 1,
+                    MixedScore = 2,
+                    PlayerCount = 4,
+                    Spiral = true,
+                    XZones = 4,
+                    YZones = 4,
+                    RichnessScore = 0
+                };
+                mapGen.Launch(setting, () => { Singleton<MonoBehaviour>.Instance.StartCoroutine(SendChunksToServer(this)); });
+                
             }
             else if (msg.MapExists == MapState.Requested)
             {
@@ -98,6 +107,7 @@ namespace Assets.Scripts.Networking
 
         IEnumerator<WaitForSeconds> SendChunksToServer(Client client)
         {
+            Debug.Log("Map made! Sending it to the server.");
             var wholeMap = HexTile.ParentMap.SerializeMap();
             for (int x = 0; x < wholeMap.Length/500 + 1; x++)
             {

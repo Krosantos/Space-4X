@@ -23,13 +23,6 @@ public class MapGenTest : MonoBehaviour
         };
         MapGen = new MapGen();
 
-        MapGen.Launch(setting);
-        /*
-        MapGen.SpawnTiles(setting);
-        MapGen.MapTiles();
-        MapGen.AssignRegions(setting);
-        MapGen.AssignSectors();
-        MapGen.AssignTiles();
-        */
+        MapGen.Launch(setting,() => {Debug.Log("Map Done!");});
     }
 }

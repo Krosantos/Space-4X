@@ -22,12 +22,12 @@ namespace Assets.Scripts.MapGen
         }
         public static GameObject Map;
 
-        public void Launch(MapSetting setting)
+        public void Launch(MapSetting setting, Action callback)
         {
-            Singleton<MonoBehaviour>.Instance.StartCoroutine(GenerateMap(setting));
+            Singleton<MonoBehaviour>.Instance.StartCoroutine(GenerateMap(setting, callback));
         }
 
-        IEnumerator<WaitForSeconds> GenerateMap(MapSetting setting)
+        IEnumerator<WaitForSeconds> GenerateMap(MapSetting setting, Action callback )
         {
             SpawnTiles(setting);
             Debug.Log("From the formless void, she wrought the expanse of space.");
@@ -43,12 +43,15 @@ namespace Assets.Scripts.MapGen
             yield return new WaitForSeconds(0.05f);
             AssignTiles();
             Debug.Log("And to Name a thing is to shape it, and the world heaved into shape.");
+            AssignResources(setting);
+            Debug.Log("And into this shape, she Divided herself.");
+            callback();
         }
 
         public void SpawnTiles (MapSetting setting) {
             Map = new GameObject {name = "Map"};
             HexTile.ParentMap = new HexMap();
-            var zoneCoords = new List<Vector2>();
+            var zoneCoords = new System.Collections.Generic.List<Vector2>();
             if (setting.Spiral)
             {
                 

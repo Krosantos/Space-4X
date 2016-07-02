@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace Assets.Scripts
 {
@@ -53,5 +55,11 @@ namespace Assets.Scripts
         {
             _applicationIsQuitting = true;
         }
+
+        public void CoroutineWithCallback(IEnumerator<T> coroutine, Action callback)
+        {
+            StartCoroutine(coroutine);
+        }
+
     }
 }
