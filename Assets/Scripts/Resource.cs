@@ -1,4 +1,5 @@
 ﻿using System;
+using Assets.Scripts.Utility;
 
 namespace Assets.Scripts
 {
@@ -8,14 +9,25 @@ namespace Assets.Scripts
         public int Quantity, RegenQuantity, MaxQuantity;
         public int RegenTurns, TurnsToRegen;
 
+        //This is the one we're gonna use with map gen.
+        //Resources aren't equal: some are frequent low yields, some are long-refresh/big payout.
         public Resource(ResourceType type)
         {
             Type = type;
+            switch (type)
+            {
+                case ResourceType.Water:
+
+                    break;
+            }
         }
 
-        public Resource(int resourceType, int resourceQuantity) {
+        //This constructor is for use with MapLoader/serialized maps.
+        public Resource(int resourceType, int resourceQuantity, int regenQuantity , int turnsToRegen) {
             Type = (ResourceType)resourceType;
             Quantity = resourceQuantity;
+            RegenQuantity = regenQuantity;
+            TurnsToRegen = turnsToRegen;
         }
 
         public void OnTurn() {

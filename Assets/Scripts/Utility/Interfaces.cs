@@ -1,10 +1,13 @@
-﻿public interface ITurnable
+﻿namespace Assets.Scripts.Utility
 {
-    void OnTurn();
-}
+    public interface ITurnable
+    {
+        void OnTurn();
+    }
 
-public interface ISelectable
-{
-    void OnSelect();
-    void OnDeselect();
+    public interface ISelectable
+    {
+        void OnSelect();
+        void OnDeselect();
+    }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using Assets.Scripts.Networking;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using Terrain = Assets.Scripts.Utility.Terrain;
 
 namespace Assets.Scripts.MapGen
 {
@@ -32,7 +33,7 @@ namespace Assets.Scripts.MapGen
                 {
                     for (var x = 0; x < piece.Length; x++)
                     {
-                        _serializedMap[index] = piece[x];
+                        _serializedMap[index] = x;
                         index++;
                     }
                 }
@@ -41,30 +42,31 @@ namespace Assets.Scripts.MapGen
             }
 
             //Otherwise, Add the chunk of map to the list.
-            else
-            {
-                _allMapPieces.Add(msg.SerializedMapChunk);
-                return false;
-            }
+            Debug.Log("Adding this piece to the total map!");
+            _allMapPieces.Add(msg.SerializedMapChunk);
+            return false;
         }
 
         public Dictionary<int,HexTile> MakeServerMapFromArray()
         {
-            var hexHolder = new GameObject();
+            var hexHolder = new GameObject {name = "Map"};
             var result = new Dictionary<int,HexTile>();
             var hexMap = new HexMap(_serializedMap[0], _serializedMap[1]);
             HexTile.ParentMap = hexMap;
-            for (var t = 2; t < _serializedMap.Length; t += 6)
+            for (var t = 2; t < _serializedMap.Length; t += 8)
             {
                 //Serialized maps have large deserts of 0,0,0,0,0... on their tails. Cut this off when that happens.
                 if (_serializedMap[t + 2] == 0) break;
 
-                var tile = hexHolder.AddComponent<HexTile>();
+                var newObject = new GameObject();
+                newObject.transform.parent = hexHolder.transform;
+                var tile = newObject.AddComponent<HexTile>();
                 tile.X = _serializedMap[t];
                 tile.Y = _serializedMap[t + 1];
                 tile.Id = _serializedMap[t + 2];
                 tile.Terrain = (Terrain) _serializedMap[t + 3];
-                tile.Resource = new Resource(_serializedMap[t + 4], _serializedMap[t + 5]);
+                tile.Resource = new Resource(_serializedMap[t + 4], _serializedMap[t + 5], _serializedMap[t + 6], _serializedMap[t + 7]);
+                newObject.name = tile.X + ", " + tile.Y;
 
                 //Add the tile to reference lists.
                 try
@@ -77,7 +79,7 @@ namespace Assets.Scripts.MapGen
                     Debug.Log(e);
                 }
             }
-
+            Debug.Log("Built the entire map!");
             return result;
         }
 
@@ -87,7 +89,7 @@ namespace Assets.Scripts.MapGen
             var hexMap = new HexMap(_serializedMap[0], _serializedMap[1]);
             HexTile.ParentMap = hexMap;
 
-            for (var t = 2; t < _serializedMap.Length; t += 6)
+            for (var t = 2; t < _serializedMap.Length; t += 8)
             {
                 //Serialized maps have large deserts of 0,0,0,0,0... on their tails. Cut this off when that happens.
                 if (_serializedMap[t + 2] == 0) break;
@@ -103,12 +105,13 @@ namespace Assets.Scripts.MapGen
                 }
                 if (hexObject == null) continue;
                 var tile = hexObject.GetComponent<HexTile>();
+                //TODO: Why the fuck is the map initializing too small?
                 hexMap.AllTiles[_serializedMap[t], _serializedMap[t+1]] = tile;
                 tile.X = _serializedMap[t];
                 tile.Y = _serializedMap[t+1];
                 tile.Id = _serializedMap[t+2];
                 tile.Terrain = (Terrain)_serializedMap[t+3];
-                tile.Resource = new Resource(_serializedMap[t+4], _serializedMap[t+5]);
+                tile.Resource = new Resource(_serializedMap[t+4], _serializedMap[t+5], _serializedMap[t+6], _serializedMap[t+7]);
                 hexObject.name = (tile.X + ", " + tile.Y);
                 hexObject.transform.parent = mapObject.transform;
 

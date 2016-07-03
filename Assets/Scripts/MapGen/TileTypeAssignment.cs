@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using Assets.Scripts.Utility;
 using UnityEngine;
+using Terrain = Assets.Scripts.Utility.Terrain;
 
 namespace Assets.Scripts.MapGen
 {

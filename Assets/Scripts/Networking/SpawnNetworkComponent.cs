@@ -36,13 +36,12 @@ namespace Assets.Scripts.Networking
         }
 
         [UsedImplicitly]
+        // ReSharper disable once InconsistentNaming
         private void OnGUI()
         {
-            if (IsStartUp)
-            {
-                GUI.Label(new Rect(2, 10, 150, 100), "Press S for server");
-                GUI.Label(new Rect(2, 50, 150, 100), "Press C for client");
-            }
+            if (!IsStartUp) return;
+            GUI.Label(new Rect(2, 10, 150, 100), "Press S for server");
+            GUI.Label(new Rect(2, 50, 150, 100), "Press C for client");
         }
 
         private void SetupServer()

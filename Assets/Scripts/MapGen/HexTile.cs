@@ -1,5 +1,9 @@
 ﻿using System.Collections.Generic;
+using Assets.Scripts.UI;
+using Assets.Scripts.Utility;
+using JetBrains.Annotations;
 using UnityEngine;
+using Terrain = Assets.Scripts.Utility.Terrain;
 
 namespace Assets.Scripts.MapGen
 {
@@ -160,9 +164,10 @@ namespace Assets.Scripts.MapGen
         {
         }
 
+        [UsedImplicitly]
         private void Awake()
         {
-            Resource = new Resource(0, 0);
+            Resource = new Resource(0, 0, 0, 0);
         }
 
         public void SetId()

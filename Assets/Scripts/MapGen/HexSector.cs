@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using Assets.Scripts.Utility;
 using UnityEngine;
+// ReSharper disable CompareOfFloatsByEqualityOperator
 
 namespace Assets.Scripts.MapGen
 {
@@ -112,6 +114,7 @@ namespace Assets.Scripts.MapGen
                 {
                     hexObject = Object.Instantiate(HexPrefab, new Vector3(tileXPos, tileYPos + 0.5f, 0), Quaternion.identity) as GameObject;
                 }
+                if (hexObject == null) continue;
                 var tile = hexObject.GetComponent<HexTile>();
                 
                 HexTile.ParentMap.TileList.Add(tile);
@@ -119,7 +122,7 @@ namespace Assets.Scripts.MapGen
                 tile.ParentSector = this;
                 tile.X = tileXCord;
                 tile.Y = tileYCord;
-                tile.Resource = new Resource(0,0);
+                tile.Resource = new Resource(0,0,0,0);
                 tile.SetId();
                 hexObject.name = (tile.X+", "+tile.Y);
                 hexObject.transform.parent = MapGen.Map.transform;

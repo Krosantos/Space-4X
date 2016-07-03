@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Assets.Scripts.MapGen;
+using Assets.Scripts.Utility;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -15,7 +15,6 @@ namespace Assets.Scripts.Networking
         [UsedImplicitly]
         void Awake() {
             GameState = new GameState();
-            NetworkServer.Listen(7777);
             NetworkServer.RegisterHandler(Messages.ChangeDiploStatus, temp);
             NetworkServer.RegisterHandler(Messages.CreateUnit, temp);
             NetworkServer.RegisterHandler(Messages.DestroyUnit, temp);
@@ -29,6 +28,7 @@ namespace Assets.Scripts.Networking
             NetworkServer.RegisterHandler(Messages.UpdateResources, temp);
             NetworkServer.RegisterHandler(Messages.CheckForMap, CheckForMap );
             NetworkServer.RegisterHandler(MsgType.Connect, RegisterPlayerOnConnect);
+            NetworkServer.Listen(7777);
         }
 
         //This is just for while I'm setting up handlers.

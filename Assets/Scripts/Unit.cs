@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using Assets.Scripts.MapGen;
+using Assets.Scripts.UI;
+using Assets.Scripts.Utility;
 using UnityEngine;
+using Terrain = Assets.Scripts.Utility.Terrain;
 
 namespace Assets.Scripts
 {

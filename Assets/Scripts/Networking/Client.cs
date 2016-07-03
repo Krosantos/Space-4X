@@ -1,8 +1,8 @@
 ﻿#region
 
-using System.Collections;
 using System.Collections.Generic;
 using Assets.Scripts.MapGen;
+using Assets.Scripts.Utility;
 using UnityEngine;
 using UnityEngine.Networking;
 

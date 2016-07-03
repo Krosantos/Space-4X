@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Assets.Scripts.Utility;
 using UnityEngine;
 
 namespace Assets.Scripts.MapGen
@@ -51,7 +52,7 @@ namespace Assets.Scripts.MapGen
         public void SpawnTiles (MapSetting setting) {
             Map = new GameObject {name = "Map"};
             HexTile.ParentMap = new HexMap();
-            var zoneCoords = new System.Collections.Generic.List<Vector2>();
+            var zoneCoords = new List<Vector2>();
             if (setting.Spiral)
             {
                 

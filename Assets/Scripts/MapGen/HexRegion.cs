@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using Assets.Scripts.Utility;
 using UnityEngine;
+// ReSharper disable CompareOfFloatsByEqualityOperator
 
 namespace Assets.Scripts.MapGen
 {
