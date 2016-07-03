@@ -82,6 +82,7 @@ namespace Assets.Scripts.Networking
         private IEnumerator<WaitForSeconds> SendChunks(NetworkMessage netMsg)
         {
             var wholeMap = GameState.SerializedMap;
+            Debug.Log("Sending the map! It's gonna be "+wholeMap[0]+" by "+wholeMap[1]+" tiles big!");
             for (int x = 0; x < wholeMap.Length / 500 + 1; x++)
             {
                 var chunk = new int[500];
@@ -92,11 +93,11 @@ namespace Assets.Scripts.Networking
                         chunk[y] = wholeMap[x * 500 + y];
                     }
                 }
-                NetworkServer.SendToClient(netMsg.conn.connectionId, Messages.TransmitMap, new TransmitMapMsg(chunk, false));
+                NetworkServer.SendToClient(netMsg.conn.connectionId, Messages.TransmitMap, new TransmitMapMsg(x,chunk, false));
                 yield return new WaitForSeconds(0.01f);
             }
             Debug.Log("Telling the client that we sent the entire map.");
-            NetworkServer.SendToClient(netMsg.conn.connectionId, Messages.TransmitMap, new TransmitMapMsg(null, true));
+            NetworkServer.SendToClient(netMsg.conn.connectionId, Messages.TransmitMap, new TransmitMapMsg(0,null, true));
         }
     }
 }

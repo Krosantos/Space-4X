@@ -15,26 +15,24 @@ namespace Assets.Scripts.MapGen
             get { return Resources.Load<GameObject>("PlaceholderHex"); }
         }
     
-        private List<int[]> _allMapPieces;
+        private Dictionary<int, int[]> _allMapPieces;
         private int[] _serializedMap;
 
         public bool AddPacketToMap(TransmitMapMsg msg, GameState gameState)
         {
             //Initialize the list if not present.
-            if(_allMapPieces == null) _allMapPieces = new List<int[]>();
+            if(_allMapPieces == null) _allMapPieces = new Dictionary<int,int[]>();
 
             //If it's the final chunk, create the serialized map.
             if (msg.IsFinalPiece)
             {
                 Debug.Log("We have the entire map!");
-                _serializedMap = new int[_allMapPieces.Sum(x => x.Length)];
-                var index = 0;
-                foreach (var piece in _allMapPieces)
+                _serializedMap = new int[(_allMapPieces.Count+1)*500];
+                for (var x = 0; x < _allMapPieces.Count; x++)
                 {
-                    for (var x = 0; x < piece.Length; x++)
+                    for (var y = 0; y < _allMapPieces[x].Length; y++)
                     {
-                        _serializedMap[index] = x;
-                        index++;
+                        _serializedMap[x*500 + y] = _allMapPieces[x][y];
                     }
                 }
                 gameState.SerializedMap = _serializedMap;
@@ -43,7 +41,7 @@ namespace Assets.Scripts.MapGen
 
             //Otherwise, Add the chunk of map to the list.
             Debug.Log("Adding this piece to the total map!");
-            _allMapPieces.Add(msg.SerializedMapChunk);
+            _allMapPieces.Add(msg.Index,msg.SerializedMapChunk);
             return false;
         }
 
@@ -52,6 +50,7 @@ namespace Assets.Scripts.MapGen
             var hexHolder = new GameObject {name = "Map"};
             var result = new Dictionary<int,HexTile>();
             var hexMap = new HexMap(_serializedMap[0], _serializedMap[1]);
+            Debug.Log("The map we got from the client is "+_serializedMap[0]+" by "+_serializedMap[1]+" tiles big.");
             HexTile.ParentMap = hexMap;
             for (var t = 2; t < _serializedMap.Length; t += 8)
             {
@@ -106,7 +105,7 @@ namespace Assets.Scripts.MapGen
                 if (hexObject == null) continue;
                 var tile = hexObject.GetComponent<HexTile>();
                 //TODO: Why the fuck is the map initializing too small?
-                hexMap.AllTiles[_serializedMap[t], _serializedMap[t+1]] = tile;
+                //hexMap.AllTiles[_serializedMap[t], _serializedMap[t+1]] = tile;
                 tile.X = _serializedMap[t];
                 tile.Y = _serializedMap[t+1];
                 tile.Id = _serializedMap[t+2];

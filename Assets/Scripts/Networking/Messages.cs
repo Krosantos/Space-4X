@@ -57,11 +57,14 @@ namespace Assets.Scripts.Networking
     public class TransmitMapMsg : MessageBase
     {
         public bool IsRequest;
+        public int Index;
         public int[] SerializedMapChunk;
         public bool IsFinalPiece;
 
         public TransmitMapMsg() { }
-        public TransmitMapMsg(int[] input, bool isFinal) {
+        public TransmitMapMsg(int index, int[] input, bool isFinal)
+        {
+            Index = index;
             SerializedMapChunk = input;
             IsFinalPiece = isFinal;
             IsRequest = false;

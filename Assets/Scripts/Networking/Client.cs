@@ -119,11 +119,11 @@ namespace Assets.Scripts.Networking
                         chunk[y] = wholeMap[x*500 + y];
                     }
                 }
-                client.Send(Messages.TransmitMap, new TransmitMapMsg(chunk, false));
+                client.Send(Messages.TransmitMap, new TransmitMapMsg(x,chunk, false));
                 yield return new WaitForSeconds(0.01f);
             }
             Debug.Log("Telling the server that we sent the entire map.");
-            client.Send(Messages.TransmitMap, new TransmitMapMsg(null, true));
+            client.Send(Messages.TransmitMap, new TransmitMapMsg(0,null, true));
         }
     }
 }
