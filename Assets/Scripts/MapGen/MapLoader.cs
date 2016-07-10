@@ -104,12 +104,11 @@ namespace Assets.Scripts.MapGen
                 }
                 if (hexObject == null) continue;
                 var tile = hexObject.GetComponent<HexTile>();
-                //TODO: Why the fuck is the map initializing too small?
-                //hexMap.AllTiles[_serializedMap[t], _serializedMap[t+1]] = tile;
+                hexMap.AllTiles[_serializedMap[t], _serializedMap[t+1]] = tile;
                 tile.X = _serializedMap[t];
                 tile.Y = _serializedMap[t+1];
                 tile.Id = _serializedMap[t+2];
-                tile.Terrain = (Terrain)_serializedMap[t+3];
+                tile.SetTerrain((Terrain)_serializedMap[t+3]);
                 tile.Resource = new Resource(_serializedMap[t+4], _serializedMap[t+5], _serializedMap[t+6], _serializedMap[t+7]);
                 hexObject.name = (tile.X + ", " + tile.Y);
                 hexObject.transform.parent = mapObject.transform;

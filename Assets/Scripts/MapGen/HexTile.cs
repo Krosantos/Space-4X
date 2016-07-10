@@ -176,6 +176,12 @@ namespace Assets.Scripts.MapGen
             Id = _idGen;
         }
 
+        public void SetTerrain(Terrain type)
+        {
+            Terrain = type;
+            Sprite = Resources.Load<Sprite>("Sprites/" + Terrain);
+        }
+
         public void OnMouseDown()
         {
             UiSelect.Select(this);

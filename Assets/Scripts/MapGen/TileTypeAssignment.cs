@@ -24,7 +24,7 @@ namespace Assets.Scripts.MapGen
                         sector.SeedTerrain(Terrain.Deadspace, 4,0.33f, 0.75f);
                         sector.SeedTerrain(Terrain.IonCloud, 3, 0.4f, 0.75f, canOverwrite: true);
                         sector.SeedAsteroids(3,0.75f,0.85f,0.2f,canOverwrite: true);
-                        sector.CenterTile.Terrain = Terrain.Blackhole;
+                        sector.CenterTile.SetTerrain(Terrain.Blackhole);
                         break;
                     case SectorType.Asteroids:
                         sector.SeedAsteroids(6,0.85f,0.95f,0.15f);
@@ -49,13 +49,8 @@ namespace Assets.Scripts.MapGen
                         sector.SeedAsteroids(3, 0.45f, 0.65f, 0.1f, initialStrength: 0.7f);
                         sector.SeedTerrain(Terrain.IonCloud, 3, 0.33f,0.85f);
                         sector.PlaceTile(Terrain.Planet,true);
-                        sector.CenterTile.Terrain = Terrain.Star;
+                        sector.CenterTile.SetTerrain(Terrain.Star);
                     break;
-                }
-
-                foreach (var tile in sector.ChildTiles)
-                {
-                    tile.Sprite = Resources.Load<Sprite>("Sprites/"+tile.Terrain);
                 }
             }
         }
@@ -82,7 +77,7 @@ namespace Assets.Scripts.MapGen
                     //Then, it has a chance to get assigned the terrain, or to pass on its genes to its own neighbours.
                     tilesToAdd.AddRange(tile.Neighbours.Where(x=> !closedList.Contains(x) && Random.value <= spreadChance).ToList());
 
-                    if (Random.value <= convertChance && (canBreakOut || tile.ParentSector == seedTile.ParentSector) && (canOverwrite || tile.Terrain == Terrain.Space)) tile.Terrain = terrain;
+                    if (Random.value <= convertChance && (canBreakOut || tile.ParentSector == seedTile.ParentSector) && (canOverwrite || tile.Terrain == Terrain.Space)) tile.SetTerrain(terrain);
                     tilesToRemove.Add(tile);
                     closedList.Add(tile);
                 }
@@ -135,10 +130,10 @@ namespace Assets.Scripts.MapGen
             //Now that everything's in the asteroidSize dictionary, go through it and convert the value to asteroid size.
             foreach (var pair in asteroidSize.Where(pair => (canOverwrite || pair.Key.Terrain == Terrain.Space) && (canBreakOut || pair.Key.ParentSector == seedTile.ParentSector)))
             {
-                if (pair.Value >= 0.2f) pair.Key.Terrain = Terrain.AsteroidS;
-                if (pair.Value >= 0.4f) pair.Key.Terrain = Terrain.AsteroidM;
-                if (pair.Value >= 0.6f) pair.Key.Terrain = Terrain.AsteroidL;
-                if (pair.Value >= 0.8f) pair.Key.Terrain = Terrain.AsteroidX;
+                if (pair.Value >= 0.2f) pair.Key.SetTerrain(Terrain.AsteroidS);
+                if (pair.Value >= 0.4f) pair.Key.SetTerrain(Terrain.AsteroidM);
+                if (pair.Value >= 0.6f) pair.Key.SetTerrain(Terrain.AsteroidL);
+                if (pair.Value >= 0.8f) pair.Key.SetTerrain(Terrain.AsteroidX);
             }
         }
 
@@ -148,7 +143,7 @@ namespace Assets.Scripts.MapGen
                 ? sector.ChildTiles
                 : sector.ChildTiles.Where(x => x.Terrain == Terrain.Space).ToList();
 
-            possibleTiles[Random.Range(0, possibleTiles.Count)].Terrain = terrain;
+            possibleTiles[Random.Range(0, possibleTiles.Count)].SetTerrain(terrain);
         }
     }
 }
