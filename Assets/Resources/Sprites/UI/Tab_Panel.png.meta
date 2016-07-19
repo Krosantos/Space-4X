@@ -1,0 +1,181 @@
+fileFormatVersion: 2
+guid: 9f9e7a4de13e9ac46a0483a640175cb5
+timeCreated: 1468898853
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: glassPanel_tab_0
+    21300002: glassPanel_tab_1
+    21300004: glassPanel_tab_2
+    21300006: glassPanel_tab_3
+    21300008: glassPanel_tab_4
+    21300010: glassPanel_tab_5
+    21300012: glassPanel_tab_6
+    21300014: glassPanel_tab_7
+    21300016: glassPanel_tab_8
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 7
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 2048
+  textureSettings:
+    filterMode: 0
+    aniso: 1
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  allowsAlphaSplitting: 0
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 29, y: 17, z: 37, w: 26}
+  spritePixelsToUnits: 100
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: glassPanel_tab_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 92
+        width: 33
+        height: 20
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: glassPanel_tab_1
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 92
+        width: 28
+        height: 20
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: glassPanel_tab_2
+      rect:
+        serializedVersion: 2
+        x: 61
+        y: 92
+        width: 39
+        height: 20
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: glassPanel_tab_3
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 38
+        width: 33
+        height: 54
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -16.5, y: 27}
+        - {x: -16.5, y: -27}
+        - {x: 16.5, y: -27}
+        - {x: 16.5, y: 27}
+    - name: glassPanel_tab_4
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 38
+        width: 28
+        height: 54
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: glassPanel_tab_5
+      rect:
+        serializedVersion: 2
+        x: 61
+        y: 38
+        width: 39
+        height: 54
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -19.5, y: 27}
+        - {x: -19.5, y: -27}
+        - {x: 19.5, y: -27}
+        - {x: 19.5, y: 27}
+    - name: glassPanel_tab_6
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 33
+        height: 38
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -16.5, y: 19}
+        - {x: -16.5, y: -19}
+        - {x: 16.5, y: -19}
+        - {x: 16.5, y: 19}
+    - name: glassPanel_tab_7
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 0
+        width: 28
+        height: 38
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: glassPanel_tab_8
+      rect:
+        serializedVersion: 2
+        x: 61
+        y: 0
+        width: 39
+        height: 38
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -19.5, y: 19}
+        - {x: -19.5, y: -19}
+        - {x: 19.5, y: -19}
+        - {x: 19.5, y: 19}
+    outline: []
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,16 +1,30 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
     public float MaxSpeed;
-    public float ScrollSpeed = 20f;
-    public float SpeedRamp = 1.1f;
+    public float ScrollSpeed = 10f;
+    public float SpeedRamp = 1.005f;
     public Camera Camera;
+
+    public void Awake()
+    {
+        Cursor.lockState = CursorLockMode.Confined;
+    }
 
     public void Update()
     {
         var resetSpeed = true;
         Camera.fieldOfView += Input.mouseScrollDelta.y * -1.6f;
+        if (Input.mouseScrollDelta.y > 0f)
+        {
+            var mousePos = Input.mousePosition;
+            mousePos.x -= Screen.width / 2f;
+            mousePos.y -= Screen.height / 2f;
+            Camera.transform.Translate(mousePos * Time.deltaTime /2, Space.World);
+        }
+
         if (Input.mousePosition.y >= Screen.height*0.95f)
         {
             Camera.transform.Translate(Vector3.up * Time.deltaTime * ScrollSpeed, Space.World);
@@ -37,7 +51,7 @@ public class CameraController : MonoBehaviour
         }
         if(resetSpeed)
         {
-            ScrollSpeed = 20f;
+            ScrollSpeed = 10f;
         }
 
         ClampEverything();
@@ -47,6 +61,6 @@ public class CameraController : MonoBehaviour
     {
         if (ScrollSpeed >= MaxSpeed) ScrollSpeed = MaxSpeed;
         if (Camera.fieldOfView <= 8f) Camera.fieldOfView = 8f;
-        if (Camera.fieldOfView >= 40f) Camera.fieldOfView = 40f;
+        if (Camera.fieldOfView >= 60f) Camera.fieldOfView = 60f;
     }
 }

@@ -179,7 +179,7 @@ namespace Assets.Scripts.MapGen
         public void SetTerrain(Terrain type)
         {
             Terrain = type;
-            Sprite = Resources.Load<Sprite>("Sprites/" + Terrain);
+            Sprite = Resources.Load<Sprite>("Sprites/Map/" + Terrain);
         }
 
         public void OnMouseDown()
