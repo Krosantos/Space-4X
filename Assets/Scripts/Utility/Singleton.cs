@@ -6,7 +6,7 @@ namespace Assets.Scripts
 {
     public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
     {
-
+        public static Vector2 CameraBounds;
         private static T _instance;
         private static object _lock = new object();
         private static bool _applicationIsQuitting;

@@ -16,6 +16,13 @@ namespace Assets.Scripts.UI
             Selected = target;
             target.OnSelect();
         }
+
+        public static void SelectSelf(this ISelectable target)
+        {
+            if (Selected != null) Selected.OnDeselect();
+            Selected = target;
+            target.OnSelect();
+        }
     }
 
     public enum SelectType

@@ -10,10 +10,14 @@ namespace Assets.Scripts
         public bool UseSpiral;
         public int PlayerCount,XZone,YZone, AsteroidScore, IonScore, MixedScore, Richness;
         public MapGen.MapGen MapGen;
+        public GameObject ThisBlueShip, ThisRedShip;
+        public static GameObject BlueShip, RedShip;
 
         [UsedImplicitly]
         void Awake()
         {
+            BlueShip = ThisBlueShip;
+            RedShip = ThisRedShip;
             var setting = new MapSetting
             {
                 AsteroidScore = AsteroidScore,

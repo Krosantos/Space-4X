@@ -46,6 +46,7 @@ namespace Assets.Scripts.MapGen
             Debug.Log("And to Name a thing is to shape it, and the world heaved into shape.");
             AssignResources(setting);
             Debug.Log("And into this shape, she Divided herself.");
+            TestShips();
             callback();
         }
 
@@ -136,6 +137,21 @@ namespace Assets.Scripts.MapGen
         public void AssignResources(MapSetting setting)
         {
             RegionList.AssignResources(setting);
+        }
+
+        //Test function! Kill me later!
+        public void TestShips()
+        {
+            var blueTile = HexTile.ParentMap.AllTiles[74, 67];
+            var redTile = HexTile.ParentMap.AllTiles[75, 68];
+
+            var blueShip = (GameObject)Singleton<MonoBehaviour>.Instantiate(MapGenTest.BlueShip, blueTile.transform.position, Quaternion.identity);
+            var redShip = (GameObject)Singleton<MonoBehaviour>.Instantiate(MapGenTest.RedShip, redTile.transform.position, Quaternion.identity);
+
+            blueTile.OccupyUnit = blueShip.GetComponent<Unit>();
+            blueShip.GetComponent<Unit>().CurrentTile = blueTile;
+            redTile.OccupyUnit = redShip.GetComponent<Unit>();
+            redShip.GetComponent<Unit>().CurrentTile = redTile;
         }
     }
 }

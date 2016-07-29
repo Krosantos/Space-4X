@@ -33,7 +33,7 @@ namespace Assets.Scripts
         {
             get
             {
-                var result = new Dictionary<Terrain, int> {{Terrain.AsteroidS, 2}, {Terrain.Space, 1}};
+                var result = new Dictionary<Terrain, int> { {Terrain.AsteroidL, 99}, {Terrain.AsteroidX, 99}, {Terrain.AsteroidM, 99}, {Terrain.IonCloud, 2}, {Terrain.Deadspace, 3},{Terrain.AsteroidS, 2}, {Terrain.Space, 1}};
                 return result;
             }
         }
@@ -65,7 +65,7 @@ namespace Assets.Scripts
 
         public void OnSelect()
         {
-            Debug.Log("I AM SELECTED.");
+            Debug.Log("Select Unit!");
             foreach (var tile in TilesInRange)
             {
                 if (tile.OccupyUnit != null)
@@ -86,11 +86,6 @@ namespace Assets.Scripts
             {
                 tile.TintColor = TileExtensions.ClearSelect;
             }
-        }
-
-        public void OnMouseDown()
-        {
-            UiSelect.Select(this);
         }
     }
 }

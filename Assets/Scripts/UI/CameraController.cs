@@ -16,6 +16,7 @@ public class CameraController : MonoBehaviour
     public void Update()
     {
         var resetSpeed = true;
+
         Camera.fieldOfView += Input.mouseScrollDelta.y * -1.6f;
         if (Input.mouseScrollDelta.y > 0f)
         {
@@ -53,7 +54,6 @@ public class CameraController : MonoBehaviour
         {
             ScrollSpeed = 10f;
         }
-
         ClampEverything();
     }
 

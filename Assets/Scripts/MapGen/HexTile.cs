@@ -152,12 +152,15 @@ namespace Assets.Scripts.MapGen
 
         public void OnSelect()
         {
-            Debug.Log("I am a tile!");
-            if (UiSelect.Type == SelectType.Unit)
+            Debug.Log("Select Tile!");
+            if (OccupyUnit == null)
             {
-                Debug.Log("Previously, a unit was selected!");
+                UiSelect.Type = SelectType.Tile;
             }
-            UiSelect.Type = SelectType.Tile;
+            else
+            {
+                OccupyUnit.SelectSelf();
+            }
         }
 
         public void OnDeselect()
@@ -184,7 +187,7 @@ namespace Assets.Scripts.MapGen
 
         public void OnMouseDown()
         {
-            UiSelect.Select(this);
+            this.SelectSelf();
         }
     }
 }
