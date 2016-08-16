@@ -47,13 +47,13 @@ namespace Assets.Scripts
             set { gameObject.GetComponent<SpriteRenderer>().sprite = value; }
         }
 
-        public void Move(HexTile tile)
+        public void Move(HexTile tile, int totalMoveCost)
         {
             //This is for after a unit has been told to move by the server.
             CurrentTile.OccupyUnit = null;
             CurrentTile = tile;
             CurrentTile.OccupyUnit = this;
-            MovesLeft -= MoveCost[tile.Terrain];
+            MovesLeft -= totalMoveCost;
             //Animate stuff later when you don't suck.
             transform.position = tile.transform.position;        
         }

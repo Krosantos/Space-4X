@@ -25,14 +25,20 @@ namespace Assets.Scripts.Networking
     {
         public int UnitId;
         public int HexTileId;
+        public int TotalMoveCost;
 
         public MoveUnitMsg() { }
-        public MoveUnitMsg(int unitId, int hexTileId)
+        public MoveUnitMsg(int unitId, int hexTileId, int moveCost)
         {
             UnitId = unitId;
             HexTileId = hexTileId;
+            TotalMoveCost = moveCost;
         }
     }
+
+    public class EndTurnMsg : MessageBase { }
+
+    public class TakeTurnMsg : MessageBase { }
 
     public class RegisterNewPlayerMsg : MessageBase {
         public int PlayerId;

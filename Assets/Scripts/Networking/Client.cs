@@ -14,11 +14,10 @@ namespace Assets.Scripts.Networking
     {
         public GameState GameState;
         public Player Player;
-        public List<ITurnable> Turnables;
 
         public void Awake()
         {
-            Player = new Player();
+            Player = new Player {Client = this};
             GameState = new GameState();
             RegisterHandler(Messages.ChangeDiploStatus, temp);
             RegisterHandler(Messages.CreateUnit, temp);
@@ -43,10 +42,7 @@ namespace Assets.Scripts.Networking
 
         private void OnTurn(NetworkMessage netMsg)
         {
-            foreach (var turnable in Turnables)
-            {
-                turnable.OnTurn();
-            }
+            Player.OnTurn();
         }
 
         private void OnMapCheck(NetworkMessage netMsg)
@@ -102,7 +98,7 @@ namespace Assets.Scripts.Networking
         private void OnUnitMoveOrder(NetworkMessage netMsg)
         {
             var msg = netMsg.ReadMessage<MoveUnitMsg>();
-            GameState.AllUnits[msg.UnitId].Move(GameState.AllTiles[msg.HexTileId]);
+            GameState.AllUnits[msg.UnitId].Move(GameState.AllTiles[msg.HexTileId],msg.TotalMoveCost);
         }
 
         IEnumerator<WaitForSeconds> SendChunksToServer(Client client)
