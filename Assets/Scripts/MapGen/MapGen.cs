@@ -46,7 +46,7 @@ namespace Assets.Scripts.MapGen
             Debug.Log("And to Name a thing is to shape it, and the world heaved into shape.");
             AssignResources(setting);
             Debug.Log("And into this shape, she Divided herself.");
-            //TestShips();
+            TestShips();
             callback();
         }
 

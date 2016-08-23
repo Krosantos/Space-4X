@@ -153,18 +153,13 @@ namespace Assets.Scripts.MapGen
         public void OnSelect()
         {
             Debug.Log("Select Tile!");
-            if (OccupyUnit == null)
-            {
-                UiSelect.Type = SelectType.Tile;
-            }
-            else
-            {
-                OccupyUnit.SelectSelf();
-            }
+            Debug.Log("Current Type: " + UiSelect.CurrentType + ". Prev Type: " + UiSelect.LastType + ".");
         }
 
         public void OnDeselect()
         {
+            Debug.Log("Deselect Tile!");
+            Debug.Log("Current Type: "+UiSelect.CurrentType+". Prev Type: "+UiSelect.LastType+".");
         }
 
         [UsedImplicitly]
@@ -187,7 +182,8 @@ namespace Assets.Scripts.MapGen
 
         public void OnMouseDown()
         {
-            this.SelectSelf();
+            if (OccupyUnit == null) this.Select(SelectType.Tile);
+            else OccupyUnit.Select(SelectType.Unit);
         }
     }
 }

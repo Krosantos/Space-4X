@@ -66,6 +66,7 @@ namespace Assets.Scripts
         public void OnSelect()
         {
             Debug.Log("Select Unit!");
+            Debug.Log("Current Type: " + UiSelect.CurrentType + ". Prev Type: " + UiSelect.LastType + ".");
             foreach (var tile in TilesInRange)
             {
                 if (tile.OccupyUnit != null)
@@ -77,11 +78,12 @@ namespace Assets.Scripts
                 }
                 else tile.TintColor = TileExtensions.BlueSelect;
             }
-            UiSelect.Type = SelectType.Unit;
         }
 
         public void OnDeselect()
         {
+            Debug.Log("Deselect Unit!");
+            Debug.Log("Current Type: " + UiSelect.CurrentType + ". Prev Type: " + UiSelect.LastType + ".");
             foreach (var tile in TilesInRange)
             {
                 tile.TintColor = TileExtensions.ClearSelect;

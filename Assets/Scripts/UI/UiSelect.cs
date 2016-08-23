@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Utility;
+﻿using System.Diagnostics;
+using Assets.Scripts.Utility;
 
 namespace Assets.Scripts.UI
 {
@@ -8,18 +9,13 @@ namespace Assets.Scripts.UI
         //It also mediates between the Client object, and the raw stats/resources a player has accumulated.
         public static int PlayerId;
         public static ISelectable Selected;
-        public static SelectType Type;
+        public static SelectType CurrentType, LastType;
 
-        public static void Select(ISelectable target)
-        {
-            if(Selected != null)Selected.OnDeselect();
-            Selected = target;
-            target.OnSelect();
-        }
-
-        public static void SelectSelf(this ISelectable target)
+        public static void Select(this ISelectable target, SelectType type)
         {
             if (Selected != null) Selected.OnDeselect();
+            LastType = CurrentType;
+            CurrentType = type;
             Selected = target;
             target.OnSelect();
         }
