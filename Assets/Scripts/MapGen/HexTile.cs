@@ -154,6 +154,14 @@ namespace Assets.Scripts.MapGen
         {
             Debug.Log("Select Tile!");
             Debug.Log("Current Type: " + UiSelect.CurrentType + ". Prev Type: " + UiSelect.LastType + ".");
+            if (UiSelect.LastType == SelectType.Unit)
+            {
+                var selectedUnit = (Unit) UiSelect.Selected;
+                if (selectedUnit.TilesInRange.Contains(this))
+                {
+                    selectedUnit.Move();
+                }
+            }
         }
 
         public void OnDeselect()
