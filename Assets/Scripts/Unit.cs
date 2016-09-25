@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Assets.Scripts.MapGen;
+using Assets.Scripts.Networking;
 using Assets.Scripts.UI;
 using Assets.Scripts.Utility;
+using JetBrains.Annotations;
 using UnityEngine;
 using Terrain = Assets.Scripts.Utility.Terrain;
 
@@ -29,12 +32,18 @@ namespace Assets.Scripts
             }
         }
 
+        [NotNull]
         public Dictionary<Terrain, int> MoveCost
         {
             get
             {
                 var result = new Dictionary<Terrain, int> { {Terrain.AsteroidL, 99}, {Terrain.AsteroidX, 99}, {Terrain.AsteroidM, 99}, {Terrain.IonCloud, 2}, {Terrain.Deadspace, 3},{Terrain.AsteroidS, 2}, {Terrain.Space, 1}};
                 return result;
+            }
+            set
+            {
+                if (value == null) throw new ArgumentNullException("value");
+                MoveCost = value;
             }
         }
 
@@ -45,6 +54,28 @@ namespace Assets.Scripts
                 return gameObject.GetComponent<SpriteRenderer>().sprite;
             }
             set { gameObject.GetComponent<SpriteRenderer>().sprite = value; }
+        }
+
+        public static GameObject BaseUnit
+        {
+            get {return Resources.Load("BasUnit") as GameObject; }
+        }
+
+        public Unit() { }
+
+        //This is for the no-sprite version that lives in server memory.
+        public Unit(CreateUnitMsg input)
+        {
+            PlayerId = input.PlayerId;
+            UnitId = input.UnitId;
+            MaxHealth = input.MaxHealth;
+            CurrentHealth = input.MaxHealth;
+            Scale = input.Scale;
+
+            //Do something with lookups to assign ability delegates.
+
+            //Assign CurrentTile elsewhere (when you have a reference point to the GameState)
+
         }
 
         public void Move(HexTile tile, int totalMoveCost)

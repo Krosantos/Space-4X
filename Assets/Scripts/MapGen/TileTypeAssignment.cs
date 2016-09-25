@@ -92,7 +92,7 @@ namespace Assets.Scripts.MapGen
             
         }
 
-        //This works like the generic SeedTerrain function, but the farther you get from the seed, the smaller the asteroids get.
+        //Me works like the generic SeedTerrain function, but the farther you get from the seed, the smaller the asteroids get.
         private static void SeedAsteroids(this HexSector sector, int passes, float spreadChance, float decayRate, float maxShrinkChance, bool canBreakOut = true, bool canOverwrite = false, float initialStrength = 1f)
         {
             var emptyTiles = sector.ChildTiles.Where(x => x.Terrain == Terrain.Space).ToList();

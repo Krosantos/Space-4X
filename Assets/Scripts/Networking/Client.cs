@@ -18,9 +18,10 @@ namespace Assets.Scripts.Networking
         public void Awake()
         {
             Player = new Player {Client = this};
+            Player.Me = Player;
             GameState = new GameState();
             RegisterHandler(Messages.ChangeDiploStatus, temp);
-            RegisterHandler(Messages.CreateUnit, temp);
+            RegisterHandler(Messages.CreateUnit, OnCreateUnit);
             RegisterHandler(Messages.DestroyUnit, temp);
             RegisterHandler(Messages.EndGame, temp);
             RegisterHandler(Messages.EndTurn, temp);
@@ -35,7 +36,7 @@ namespace Assets.Scripts.Networking
             Connect("localhost",7777);
         }
 
-        //This is just for while I'm setting up handlers.
+        //Me is just for while I'm setting up handlers.
         private void temp(NetworkMessage netMsg)
         {
         }
@@ -43,6 +44,21 @@ namespace Assets.Scripts.Networking
         private void OnTurn(NetworkMessage netMsg)
         {
             Player.OnTurn();
+        }
+
+        private void OnCreateUnit(NetworkMessage netMsg)
+        {
+            var msg = netMsg.ReadMessage<CreateUnitMsg>();
+            var newUnitObject = Singleton<MonoBehaviour>.Instantiate(Unit.BaseUnit,
+                GameState.AllTiles[msg.TileId].transform.position, Quaternion.identity) as GameObject;
+            var newUnit = newUnitObject.GetComponent<Unit>();
+            newUnit.CurrentHealth = msg.MaxHealth;
+            newUnit.MaxHealth = msg.MaxHealth;
+            newUnit.CurrentTile = GameState.AllTiles[msg.TileId];
+            GameState.AllTiles[msg.TileId].OccupyUnit = newUnit;
+            newUnit.UnitId = msg.UnitId;
+            newUnit.Sprite = Resources.Load<Sprite>(msg.Sprite);
+            newUnit.CreateMoveCostDictFromArray(msg.MoveCost);
         }
 
         private void OnMapCheck(NetworkMessage netMsg)

@@ -9,7 +9,7 @@ namespace Assets.Scripts
         public int Quantity, RegenQuantity, MaxQuantity;
         public int RegenTurns, TurnsToRegen;
 
-        //This is the constructor we're gonna use with map gen.
+        //Me is the constructor we're gonna use with map gen.
         //Resources aren't equal: some are frequent low yields, some are long-refresh/big payout.
         public Resource(ResourceType type)
         {
@@ -103,7 +103,7 @@ namespace Assets.Scripts
             }
         }
 
-        //This constructor is for use with MapLoader/serialized maps.
+        //Me constructor is for use with MapLoader/serialized maps.
         public Resource(int resourceType, int resourceQuantity, int regenQuantity , int regenTurns) {
             Type = (ResourceType)resourceType;
             Quantity = resourceQuantity;

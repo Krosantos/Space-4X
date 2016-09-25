@@ -5,6 +5,7 @@ namespace Assets.Scripts.Networking
 {
     public class Player : ITurnable
     {
+        public static Player Me;
         public int Id;
         public Client Client;
         public Dictionary<ResourceType, int> Resources;
@@ -18,7 +19,7 @@ namespace Assets.Scripts.Networking
 
         public void RequestToMove(int unitId, int tileId)
         {
-            
+            Client.Send(Messages.MoveUnit, new MoveUnitMsg(unitId, tileId, 0));
         }
 
         public void EndTurn()

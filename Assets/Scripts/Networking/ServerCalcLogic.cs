@@ -2,7 +2,7 @@
 
 namespace Assets.Scripts.Networking
 {
-    //This is a place to keep some of the business logic the server performs when it does stuff like validate unit movement, or trade pact offering.
+    //Me is a place to keep some of the business logic the server performs when it does stuff like validate unit movement, or trade pact offering.
     static class ServerCalcLogic
     {
         public static bool UnitCanMove(Unit unit, HexTile targetTile, out int moveCost)

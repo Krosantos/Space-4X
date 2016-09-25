@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Assets.Scripts.Networking;
 using Assets.Scripts.UI;
 using Assets.Scripts.Utility;
 using JetBrains.Annotations;
@@ -154,13 +155,14 @@ namespace Assets.Scripts.MapGen
         {
             Debug.Log("Select Tile!");
             Debug.Log("Current Type: " + UiSelect.CurrentType + ". Prev Type: " + UiSelect.LastType + ".");
-            if (UiSelect.LastType == SelectType.Unit)
+            if (UiSelect.LastType != SelectType.Unit) return;
+            var selectedUnit = UiSelect.Previous as Unit;
+            if (selectedUnit == null) return;
+            if (selectedUnit.TilesInRange.Contains(this))
             {
-                var selectedUnit = (Unit) UiSelect.Selected;
-                if (selectedUnit.TilesInRange.Contains(this))
-                {
-                    selectedUnit.Move();
-                }
+                //selectedUnit.Move(this,0);
+                //Debug.Log(Player.Me);
+                Player.Me.RequestToMove(selectedUnit.UnitId,Id);
             }
         }
 

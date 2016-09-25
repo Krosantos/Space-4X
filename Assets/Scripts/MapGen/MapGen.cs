@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Assets.Scripts.Networking;
 using Assets.Scripts.Utility;
 using UnityEngine;
 
@@ -22,6 +23,7 @@ namespace Assets.Scripts.MapGen
             get { return Resources.Load<GameObject>("PlaceholderHex"); }
         }
         public static GameObject Map;
+        public Client Client;
 
         public void Launch(MapSetting setting, Action callback)
         {
@@ -144,14 +146,21 @@ namespace Assets.Scripts.MapGen
         {
             var blueTile = HexTile.ParentMap.AllTiles[74, 67];
             var redTile = HexTile.ParentMap.AllTiles[75, 68];
+            
 
-            var blueShip = (GameObject)Singleton<MonoBehaviour>.Instantiate(MapGenTest.BlueShip, blueTile.transform.position, Quaternion.identity);
-            var redShip = (GameObject)Singleton<MonoBehaviour>.Instantiate(MapGenTest.RedShip, redTile.transform.position, Quaternion.identity);
+            var testUnitMsg = new CreateUnitMsg
+            {
+                MaxHealth = 3,
+                MaxMoves = 3,
+                OnDeath = "",
+                Scale = ShipScale.Small,
+                Sprite = "Sprites/PH_BLueShip",
+                TileId = blueTile.Id,
+                Abilities = new[] {""},
+                MoveCost = new[] {1, 2, 999, 999, 999, 999, 1, 999, 0, 2, 1, 1}
+            };
 
-            blueTile.OccupyUnit = blueShip.GetComponent<Unit>();
-            blueShip.GetComponent<Unit>().CurrentTile = blueTile;
-            redTile.OccupyUnit = redShip.GetComponent<Unit>();
-            redShip.GetComponent<Unit>().CurrentTile = redTile;
+            Player.Me.Client.Send(Messages.CreateUnit, testUnitMsg);
         }
     }
 }

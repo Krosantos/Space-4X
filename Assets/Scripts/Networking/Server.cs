@@ -26,7 +26,7 @@ namespace Assets.Scripts.Networking
             NetworkServer.RegisterHandler(Messages.EndGame, temp);
             NetworkServer.RegisterHandler(Messages.EndTurn, EndTurn);
             NetworkServer.RegisterHandler(Messages.TransmitMap, TransmitMap);
-            NetworkServer.RegisterHandler(Messages.MoveUnit, temp);
+            NetworkServer.RegisterHandler(Messages.MoveUnit, ProcessUnitMovement);
             NetworkServer.RegisterHandler(Messages.SendMessage, temp);
             NetworkServer.RegisterHandler(Messages.TakeTurn, temp);
             NetworkServer.RegisterHandler(Messages.UnlockTech, temp);
@@ -36,8 +36,32 @@ namespace Assets.Scripts.Networking
             NetworkServer.Listen(7777);
         }
 
-        //This is just for while I'm setting up handlers.
+        //Me is just for while I'm setting up handlers.
         private void temp(NetworkMessage netMsg) { }
+
+        private void CreateUnit(NetworkMessage netMsg)
+        {
+            var msg = netMsg.ReadMessage<CreateUnitMsg>();
+            var newUnit = new Unit(msg)
+            {
+                CurrentTile = GameState.AllTiles[msg.TileId],
+                UnitId = GameState.GenerateId()
+            };
+            GameState.AllTiles[msg.TileId].OccupyUnit = newUnit;
+            GameState.AllUnits.Add(msg.UnitId,newUnit);
+            NetworkServer.SendToAll(Messages.CreateUnit, CreateUnitMsg.CopyMessage(msg, newUnit.UnitId));
+        }
+
+        private void ProcessUnitMovement(NetworkMessage netMsg)
+        {
+            var msg = netMsg.ReadMessage<MoveUnitMsg>();
+            var moveCost = 0;
+            var unit = GameState.AllUnits[msg.UnitId];
+            var tile = GameState.AllTiles[msg.HexTileId];
+            if (!ServerCalcLogic.UnitCanMove(unit, tile, out moveCost)) return;
+            unit.Move(tile,moveCost);
+            NetworkServer.SendToAll(Messages.MoveUnit, new MoveUnitMsg(unit.UnitId, tile.Id, moveCost));
+        }
 
         private void RegisterPlayerOnConnect(NetworkMessage netMsg)
         {

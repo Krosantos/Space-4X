@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Utility;
+﻿using System.Collections.Generic;
+using Assets.Scripts.Utility;
 using UnityEngine.Networking;
 
 namespace Assets.Scripts.Networking
@@ -33,6 +34,39 @@ namespace Assets.Scripts.Networking
             UnitId = unitId;
             HexTileId = hexTileId;
             TotalMoveCost = moveCost;
+        }
+    }
+
+    public class CreateUnitMsg : MessageBase
+    {
+        //Find a way to toss a dicitonary of movecosts and a list of abilities in here.
+        public int PlayerId, TileId, UnitId;
+        public int MaxHealth, MaxMoves;
+        public string OnDeath, Sprite;
+        public string[] Abilities;
+        public int[] MoveCost;
+        public ShipScale Scale;
+
+        public CreateUnitMsg () { }
+
+        //"Well gee, Tymko, that seems awfully redundant!", you might say.
+        //You're totally right. I'm just lazy, and this is useful in the server CreateUnit handler.
+        public static CreateUnitMsg CopyMessage(CreateUnitMsg msg, int unitId)
+        {
+            var result = new CreateUnitMsg
+            {
+                PlayerId = msg.PlayerId,
+                TileId = msg.TileId,
+                UnitId = unitId,
+                MaxHealth = msg.MaxHealth,
+                MaxMoves = msg.MaxMoves,
+                OnDeath = msg.OnDeath,
+                Sprite = msg.Sprite,
+                Abilities = msg.Abilities,
+                MoveCost = msg.MoveCost
+            };
+            
+            return result;
         }
     }
 

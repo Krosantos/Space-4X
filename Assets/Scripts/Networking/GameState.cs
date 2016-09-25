@@ -7,6 +7,7 @@ namespace Assets.Scripts.Networking
     public class GameState
     {
         //This stores all the various things that make a up a snapshot of a game.
+        public static GameState Me;
         public int MaxPlayers;
         public MapLoader MapLoader;
         public Dictionary<int, Unit> AllUnits;
@@ -27,6 +28,7 @@ namespace Assets.Scripts.Networking
             AllPlayers = new List<int>();
             MapState = MapState.None;
             MapLoader = new MapLoader();
+            Me = this;
         }
 
         public static int GenerateId()

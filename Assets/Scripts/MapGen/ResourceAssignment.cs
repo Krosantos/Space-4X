@@ -57,7 +57,7 @@ namespace Assets.Scripts.MapGen
             }
         }
 
-        //This dictates the kind of sector a given resource can appear in.
+        //Me dictates the kind of sector a given resource can appear in.
         static Dictionary<ResourceType, List<SectorType>> ResourceSpawnTypes
         {
             get
