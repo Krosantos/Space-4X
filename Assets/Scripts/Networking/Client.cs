@@ -54,6 +54,8 @@ namespace Assets.Scripts.Networking
             var newUnit = newUnitObject.GetComponent<Unit>();
             newUnit.CurrentHealth = msg.MaxHealth;
             newUnit.MaxHealth = msg.MaxHealth;
+            newUnit.MaxMoves = msg.MaxMoves;
+            newUnit.MovesLeft = msg.MaxMoves;
             newUnit.CurrentTile = GameState.AllTiles[msg.TileId];
             GameState.AllTiles[msg.TileId].OccupyUnit = newUnit;
             newUnit.UnitId = msg.UnitId;
@@ -96,7 +98,6 @@ namespace Assets.Scripts.Networking
             if (msg.IsRequest) Singleton<MonoBehaviour>.Instance.StartCoroutine(SendChunksToServer(this));
             else
             {
-                Debug.Log("We found a piece of the map!");
                 if (GameState.MapLoader.AddPacketToMap(msg, GameState)) GameState.MapLoader.MakeClientMapFromArray();
             }
 
@@ -113,6 +114,7 @@ namespace Assets.Scripts.Networking
 
         private void OnUnitMoveOrder(NetworkMessage netMsg)
         {
+            Debug.Log("Move order received!");
             var msg = netMsg.ReadMessage<MoveUnitMsg>();
             GameState.AllUnits[msg.UnitId].Move(GameState.AllTiles[msg.HexTileId],msg.TotalMoveCost);
         }

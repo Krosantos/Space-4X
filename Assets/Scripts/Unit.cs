@@ -32,20 +32,7 @@ namespace Assets.Scripts
             }
         }
 
-        [NotNull]
-        public Dictionary<Terrain, int> MoveCost
-        {
-            get
-            {
-                var result = new Dictionary<Terrain, int> { {Terrain.AsteroidL, 99}, {Terrain.AsteroidX, 99}, {Terrain.AsteroidM, 99}, {Terrain.IonCloud, 2}, {Terrain.Deadspace, 3},{Terrain.AsteroidS, 2}, {Terrain.Space, 1}};
-                return result;
-            }
-            set
-            {
-                if (value == null) throw new ArgumentNullException("value");
-                MoveCost = value;
-            }
-        }
+        public Dictionary<Terrain, int> MoveCost;
 
         public Sprite Sprite
         {
@@ -58,24 +45,7 @@ namespace Assets.Scripts
 
         public static GameObject BaseUnit
         {
-            get {return Resources.Load("BasUnit") as GameObject; }
-        }
-
-        public Unit() { }
-
-        //This is for the no-sprite version that lives in server memory.
-        public Unit(CreateUnitMsg input)
-        {
-            PlayerId = input.PlayerId;
-            UnitId = input.UnitId;
-            MaxHealth = input.MaxHealth;
-            CurrentHealth = input.MaxHealth;
-            Scale = input.Scale;
-
-            //Do something with lookups to assign ability delegates.
-
-            //Assign CurrentTile elsewhere (when you have a reference point to the GameState)
-
+            get {return Resources.Load("BaseUnit") as GameObject; }
         }
 
         public void Move(HexTile tile, int totalMoveCost)
@@ -98,6 +68,7 @@ namespace Assets.Scripts
         {
             Debug.Log("Select Unit!");
             Debug.Log("Current Type: " + UiSelect.CurrentType + ". Prev Type: " + UiSelect.LastType + ".");
+            Debug.Log("There are "+TilesInRange.Count+" tiles in range.");
             foreach (var tile in TilesInRange)
             {
                 if (tile.OccupyUnit != null)

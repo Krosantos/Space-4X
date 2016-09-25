@@ -30,9 +30,10 @@ namespace Assets.Scripts.MapGen
                 _serializedMap = new int[(_allMapPieces.Count+1)*500];
                 for (var x = 0; x < _allMapPieces.Count; x++)
                 {
+                    if (!_allMapPieces.ContainsKey(x)) continue;
                     for (var y = 0; y < _allMapPieces[x].Length; y++)
                     {
-                        _serializedMap[x*500 + y] = _allMapPieces[x][y];
+                        _serializedMap[x * 500 + y] = _allMapPieces[x][y];
                     }
                 }
                 gameState.SerializedMap = _serializedMap;
@@ -40,7 +41,6 @@ namespace Assets.Scripts.MapGen
             }
 
             //Otherwise, Add the chunk of map to the list.
-            Debug.Log("Adding this piece to the total map!");
             _allMapPieces.Add(msg.Index,msg.SerializedMapChunk);
             return false;
         }
@@ -115,6 +115,7 @@ namespace Assets.Scripts.MapGen
 
                 //Add the tile to reference lists.
                 hexMap.TileList.Add(tile);
+                if(!GameState.Me.AllTiles.ContainsKey(tile.Id))GameState.Me.AllTiles.Add(tile.Id,tile);
             }
         }
     }

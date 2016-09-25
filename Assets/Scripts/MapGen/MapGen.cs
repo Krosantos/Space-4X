@@ -48,7 +48,6 @@ namespace Assets.Scripts.MapGen
             Debug.Log("And to Name a thing is to shape it, and the world heaved into shape.");
             AssignResources(setting);
             Debug.Log("And into this shape, she Divided herself.");
-            TestShips();
             callback();
         }
 
@@ -139,28 +138,6 @@ namespace Assets.Scripts.MapGen
         public void AssignResources(MapSetting setting)
         {
             RegionList.AssignResources(setting);
-        }
-
-        //Test function! Kill me later!
-        public void TestShips()
-        {
-            var blueTile = HexTile.ParentMap.AllTiles[74, 67];
-            var redTile = HexTile.ParentMap.AllTiles[75, 68];
-            
-
-            var testUnitMsg = new CreateUnitMsg
-            {
-                MaxHealth = 3,
-                MaxMoves = 3,
-                OnDeath = "",
-                Scale = ShipScale.Small,
-                Sprite = "Sprites/PH_BLueShip",
-                TileId = blueTile.Id,
-                Abilities = new[] {""},
-                MoveCost = new[] {1, 2, 999, 999, 999, 999, 1, 999, 0, 2, 1, 1}
-            };
-
-            Player.Me.Client.Send(Messages.CreateUnit, testUnitMsg);
         }
     }
 }

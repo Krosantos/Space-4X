@@ -2,12 +2,32 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Assets.Scripts.Utility;
+using Assets.Scripts.Networking;
+using UnityEngine;
+using Terrain = Assets.Scripts.Utility.Terrain;
 
 namespace Assets.Scripts
 {
     public static class UnitExtensions
     {
+        //The server uses this to create a unit without sprites and junk.
+        public static Unit InstantiateUnitFromMsg(CreateUnitMsg msg)
+        {
+            var newUnitObject =
+                Singleton<MonoBehaviour>.Instantiate(Unit.BaseUnit, Vector3.zero, Quaternion.identity) as GameObject;
+            var newUnit = newUnitObject.GetComponent<Unit>();
+            newUnit.PlayerId = msg.PlayerId;
+            newUnit.UnitId = msg.UnitId;
+            newUnit.MaxHealth = msg.MaxHealth;
+            newUnit.CurrentHealth = msg.MaxHealth;
+            newUnit.MaxMoves = msg.MaxMoves;
+            newUnit.MovesLeft = msg.MaxMoves;
+            newUnit.Scale = msg.Scale;
+            newUnit.CreateMoveCostDictFromArray(msg.MoveCost);
+            //It'd be weird to have too much reference to the tiles here, so we'll do all that jazz elsewhere.
+            return newUnit;
+        }
+
         public static void CreateMoveCostDictFromArray(this Unit unit, int[] input)
         {
             var dict = new Dictionary<Terrain, int>

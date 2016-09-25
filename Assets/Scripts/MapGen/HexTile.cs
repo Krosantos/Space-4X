@@ -158,12 +158,10 @@ namespace Assets.Scripts.MapGen
             if (UiSelect.LastType != SelectType.Unit) return;
             var selectedUnit = UiSelect.Previous as Unit;
             if (selectedUnit == null) return;
-            if (selectedUnit.TilesInRange.Contains(this))
-            {
-                //selectedUnit.Move(this,0);
-                //Debug.Log(Player.Me);
-                Player.Me.RequestToMove(selectedUnit.UnitId,Id);
-            }
+            Debug.Log("My selected unit is: "+selectedUnit);
+            if (!selectedUnit.TilesInRange.Contains(this)) return;
+            Player.Me.Client.Send(Messages.MoveUnit, new MoveUnitMsg(selectedUnit.UnitId, Id, 0));
+            Debug.Log("Requesting to move unit "+selectedUnit.UnitId+" to tile "+Id);
         }
 
         public void OnDeselect()

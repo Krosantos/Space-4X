@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Assets.Scripts.Utility;
 using JetBrains.Annotations;
@@ -21,7 +22,7 @@ namespace Assets.Scripts.Networking
             _connectionPlayerMapping = new Dictionary<int, int>();
             _clientsWaitingForMap = new List<int>();
             NetworkServer.RegisterHandler(Messages.ChangeDiploStatus, temp);
-            NetworkServer.RegisterHandler(Messages.CreateUnit, temp);
+            NetworkServer.RegisterHandler(Messages.CreateUnit, CreateUnit);
             NetworkServer.RegisterHandler(Messages.DestroyUnit, temp);
             NetworkServer.RegisterHandler(Messages.EndGame, temp);
             NetworkServer.RegisterHandler(Messages.EndTurn, EndTurn);
@@ -42,19 +43,31 @@ namespace Assets.Scripts.Networking
         private void CreateUnit(NetworkMessage netMsg)
         {
             var msg = netMsg.ReadMessage<CreateUnitMsg>();
-            var newUnit = new Unit(msg)
-            {
-                CurrentTile = GameState.AllTiles[msg.TileId],
-                UnitId = GameState.GenerateId()
-            };
+            var newUnit = UnitExtensions.InstantiateUnitFromMsg(msg);
+            newUnit.PlayerId = _connectionPlayerMapping[netMsg.conn.connectionId];
+            newUnit.CurrentTile = GameState.AllTiles[msg.TileId];
+            newUnit.UnitId = GameState.GenerateId();
             GameState.AllTiles[msg.TileId].OccupyUnit = newUnit;
-            GameState.AllUnits.Add(msg.UnitId,newUnit);
-            NetworkServer.SendToAll(Messages.CreateUnit, CreateUnitMsg.CopyMessage(msg, newUnit.UnitId));
+            GameState.AllUnits.Add(newUnit.UnitId,newUnit);
+            NetworkServer.SendToAll(Messages.CreateUnit, CreateUnitMsg.CopyMessage(msg, newUnit));
         }
 
         private void ProcessUnitMovement(NetworkMessage netMsg)
         {
             var msg = netMsg.ReadMessage<MoveUnitMsg>();
+            Debug.Log("Request to move in from unit "+msg.UnitId+" to tile "+msg.HexTileId);
+            if (!GameState.AllUnits.ContainsKey(msg.UnitId))
+            {
+                Debug.Log("I couldn't find that unit id! The whole collection is " + GameState.AllUnits.Count + " entries long!");
+                foreach (var pair in GameState.AllUnits)
+                {
+                    Debug.Log(pair.Key+":"+ pair.Value.UnitId);
+                }
+            }
+            if (!GameState.AllTiles.ContainsKey(msg.HexTileId))
+            {
+                Debug.Log("I couldn't find that tile id! The whole collection is " + GameState.AllTiles.Count + " entries long!");
+            }
             var moveCost = 0;
             var unit = GameState.AllUnits[msg.UnitId];
             var tile = GameState.AllTiles[msg.HexTileId];
@@ -70,7 +83,14 @@ namespace Assets.Scripts.Networking
             NetworkServer.SendToClient(netMsg.conn.connectionId,Messages.RegisterNewPlayer,new RegisterNewPlayerMsg(playerId));
             GameState.AllPlayers.Add(playerId);
             PlayersTakingTurn.Add(playerId,false);
-            _connectionPlayerMapping.Add(netMsg.conn.connectionId,playerId);
+            if (_connectionPlayerMapping.ContainsKey(netMsg.conn.connectionId))
+            {
+                _connectionPlayerMapping[netMsg.conn.connectionId] = playerId;
+            }
+            else
+            {
+                _connectionPlayerMapping.Add(netMsg.conn.connectionId, playerId);
+            }
         }
 
         private void TransmitMap(NetworkMessage netMsg)

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Assets.Scripts.Networking;
 using Assets.Scripts.Utility;
 using UnityEngine;
 // ReSharper disable CompareOfFloatsByEqualityOperator
@@ -126,6 +127,7 @@ namespace Assets.Scripts.MapGen
                 tile.SetId();
                 hexObject.name = (tile.X+", "+tile.Y);
                 hexObject.transform.parent = MapGen.Map.transform;
+                GameState.Me.AllTiles.Add(tile.Id,tile);
                 if (coord.x == 4 && coord.y == 4)
                 {
                     CenterTile = tile;

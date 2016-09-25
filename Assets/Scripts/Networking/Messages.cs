@@ -51,13 +51,13 @@ namespace Assets.Scripts.Networking
 
         //"Well gee, Tymko, that seems awfully redundant!", you might say.
         //You're totally right. I'm just lazy, and this is useful in the server CreateUnit handler.
-        public static CreateUnitMsg CopyMessage(CreateUnitMsg msg, int unitId)
+        public static CreateUnitMsg CopyMessage(CreateUnitMsg msg, Unit unit)
         {
             var result = new CreateUnitMsg
             {
-                PlayerId = msg.PlayerId,
+                PlayerId = unit.PlayerId,
                 TileId = msg.TileId,
-                UnitId = unitId,
+                UnitId = unit.UnitId,
                 MaxHealth = msg.MaxHealth,
                 MaxMoves = msg.MaxMoves,
                 OnDeath = msg.OnDeath,
