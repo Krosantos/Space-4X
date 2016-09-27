@@ -1,4 +1,6 @@
-﻿using Assets.Scripts.MapGen;
+﻿using System.Diagnostics;
+using System.Linq;
+using Assets.Scripts.MapGen;
 
 namespace Assets.Scripts.Networking
 {
@@ -7,14 +9,10 @@ namespace Assets.Scripts.Networking
     {
         public static bool UnitCanMove(Unit unit, HexTile targetTile, out int moveCost)
         {
-            moveCost = 0;
             var pathToTile = unit.CurrentTile.AStarPath(targetTile, unit);
-            foreach (var hex in pathToTile)
-            {
-                moveCost += unit.MoveCost[hex.Terrain];
-                if (moveCost > unit.MovesLeft) return false;
-            }
-            return true;
+            moveCost = pathToTile.Sum(hex => unit.MoveCost[hex.Terrain]);
+
+            return (moveCost >= unit.MovesLeft);
         }
     }
 }

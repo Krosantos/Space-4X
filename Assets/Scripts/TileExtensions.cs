@@ -43,25 +43,19 @@ namespace Assets.Scripts
             openList.Add(currentTile);
             while (openList.Count > 0)
             {
-                Debug.Log("Trying again!");
                 //That's right son! Since the last time I was here, I learned me how to Linq.
                 currentTile = openList.OrderBy(x => fScore[x]).First();
                 if (currentTile == to)
                 {
-                    Debug.Log("A* success!");
                     return CreatePath(from, to, parentDict);
                 }
                 openList.Remove(currentTile);
                 closedList.Add(currentTile);
-                Debug.Log("NeighbourCount: "+currentTile.Neighbours.Count);
-                Debug.Log(HexTile.TileMap);
                 foreach (var hex in currentTile.Neighbours)
                 {
-                    Debug.Log("Investigating neighbour!");
                     var tempG = gScore[currentTile] + unit.MoveCost[hex.Terrain];
-                    if (!openList.Contains(hex) && closedList.Contains(hex))
+                    if (!openList.Contains(hex) && !closedList.Contains(hex))
                     {
-                        Debug.Log("Adding Neighbour to OpenList.");
                         openList.Add(hex);
                         parentDict.Add(hex,currentTile);
                         gScore.Add(hex,tempG);
@@ -86,7 +80,6 @@ namespace Assets.Scripts
                 }
             }
             //If you made it this far, no route exists. Sorry, breh.
-            Debug.Log("A* failure!");
             return null;
         }
 

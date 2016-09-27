@@ -53,12 +53,16 @@ namespace Assets.Scripts.Networking
                 GameState.AllTiles[msg.TileId].transform.position, Quaternion.identity) as GameObject;
             var newUnit = newUnitObject.GetComponent<Unit>();
             newUnit.CurrentHealth = msg.MaxHealth;
+            newUnit.UnitId = msg.UnitId;
             newUnit.MaxHealth = msg.MaxHealth;
             newUnit.MaxMoves = msg.MaxMoves;
             newUnit.MovesLeft = msg.MaxMoves;
             newUnit.CurrentTile = GameState.AllTiles[msg.TileId];
             GameState.AllTiles[msg.TileId].OccupyUnit = newUnit;
-            newUnit.UnitId = msg.UnitId;
+            GameState.AllUnits.Add(newUnit.UnitId, newUnit);
+            Debug.Log("The message said I'm unit id "+msg.UnitId);
+            Debug.Log("I'm unit Id "+newUnit.UnitId);
+            Debug.Log("Do I live in the GameState? "+GameState.AllUnits[newUnit.UnitId].UnitId);
             newUnit.Sprite = Resources.Load<Sprite>(msg.Sprite);
             newUnit.CreateMoveCostDictFromArray(msg.MoveCost);
         }
@@ -114,9 +118,13 @@ namespace Assets.Scripts.Networking
 
         private void OnUnitMoveOrder(NetworkMessage netMsg)
         {
-            Debug.Log("Move order received!");
             var msg = netMsg.ReadMessage<MoveUnitMsg>();
-            GameState.AllUnits[msg.UnitId].Move(GameState.AllTiles[msg.HexTileId],msg.TotalMoveCost);
+            Debug.Log("Move order received for unit "+msg.UnitId);
+            var unit = GameState.AllUnits[msg.UnitId];
+            var tile = GameState.AllTiles[msg.HexTileId];
+
+            unit.Move(tile,msg.TotalMoveCost);
+            //GameState.AllUnits[msg.UnitId].Move(GameState.AllTiles[msg.HexTileId],msg.TotalMoveCost);
         }
 
         IEnumerator<WaitForSeconds> SendChunksToServer(Client client)

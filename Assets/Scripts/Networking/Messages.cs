@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using Assets.Scripts.Utility;
 using UnityEngine.Networking;
 
@@ -65,7 +66,6 @@ namespace Assets.Scripts.Networking
                 Abilities = msg.Abilities,
                 MoveCost = msg.MoveCost
             };
-            
             return result;
         }
     }

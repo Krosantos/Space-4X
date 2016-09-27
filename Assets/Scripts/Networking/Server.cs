@@ -49,30 +49,26 @@ namespace Assets.Scripts.Networking
             newUnit.UnitId = GameState.GenerateId();
             GameState.AllTiles[msg.TileId].OccupyUnit = newUnit;
             GameState.AllUnits.Add(newUnit.UnitId,newUnit);
-            NetworkServer.SendToAll(Messages.CreateUnit, CreateUnitMsg.CopyMessage(msg, newUnit));
+
+            var msgToBroadcast = CreateUnitMsg.CopyMessage(msg, newUnit);
+            Debug.Log("My useless fucking unit Id is "+msgToBroadcast.UnitId);
+            NetworkServer.SendToAll(Messages.CreateUnit, msgToBroadcast);
         }
 
         private void ProcessUnitMovement(NetworkMessage netMsg)
         {
             var msg = netMsg.ReadMessage<MoveUnitMsg>();
             Debug.Log("Request to move in from unit "+msg.UnitId+" to tile "+msg.HexTileId);
-            if (!GameState.AllUnits.ContainsKey(msg.UnitId))
-            {
-                Debug.Log("I couldn't find that unit id! The whole collection is " + GameState.AllUnits.Count + " entries long!");
-                foreach (var pair in GameState.AllUnits)
-                {
-                    Debug.Log(pair.Key+":"+ pair.Value.UnitId);
-                }
-            }
-            if (!GameState.AllTiles.ContainsKey(msg.HexTileId))
-            {
-                Debug.Log("I couldn't find that tile id! The whole collection is " + GameState.AllTiles.Count + " entries long!");
-            }
             var moveCost = 0;
             var unit = GameState.AllUnits[msg.UnitId];
             var tile = GameState.AllTiles[msg.HexTileId];
-            if (!ServerCalcLogic.UnitCanMove(unit, tile, out moveCost)) return;
+            if (!ServerCalcLogic.UnitCanMove(unit, tile, out moveCost))
+            {
+                Debug.Log("No dice on the moving! moveCost: "+moveCost+", movesLeft: "+unit.MovesLeft);
+                return;
+            }
             unit.Move(tile,moveCost);
+            Debug.Log("Valid Move! Inform the clients!");
             NetworkServer.SendToAll(Messages.MoveUnit, new MoveUnitMsg(unit.UnitId, tile.Id, moveCost));
         }
 

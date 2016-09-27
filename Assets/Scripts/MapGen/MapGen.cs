@@ -117,6 +117,7 @@ namespace Assets.Scripts.MapGen
                 tile.X -= xMin;
                 tile.Y -= yMin;
                 HexTile.ParentMap.AllTiles[tile.X, tile.Y] = tile;
+                if (!GameState.Me.AllTiles.ContainsKey(tile.Id)) GameState.Me.AllTiles.Add(tile.Id, tile);
             }
         }
 

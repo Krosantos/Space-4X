@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Assets.Scripts.Networking;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -70,6 +69,7 @@ namespace Assets.Scripts.MapGen
                 //Add the tile to reference lists.
                 try
                 {
+                    HexTile.TileMap[tile.X, tile.Y] = tile;
                     result.Add(tile.Id, tile);
                 }
                 catch (Exception e)
