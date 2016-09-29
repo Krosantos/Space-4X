@@ -4,6 +4,7 @@ using System.Linq;
 using Assets.Scripts.Networking;
 using Assets.Scripts.Utility;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace Assets.Scripts.MapGen
 {
@@ -23,7 +24,7 @@ namespace Assets.Scripts.MapGen
             get { return Resources.Load<GameObject>("PlaceholderHex"); }
         }
         public static GameObject Map;
-        public Client Client;
+        public NetworkClient Client;
 
         public void Launch(MapSetting setting, Action callback)
         {
@@ -53,7 +54,7 @@ namespace Assets.Scripts.MapGen
 
         public void SpawnTiles (MapSetting setting) {
             Map = new GameObject {name = "Map"};
-            HexTile.ParentMap = new HexMap();
+            GameState.Me.HexMap = new HexMap();
             var zoneCoords = new List<Vector2>();
             if (setting.Spiral)
             {
@@ -104,20 +105,21 @@ namespace Assets.Scripts.MapGen
 
         public void MapTiles()
         {
-            var list = HexTile.ParentMap.TileList;
+            var list = GameState.Me.HexMap.TileList;
             var xMin = list.Select(t => t.X).Min();
             var yMin = list.Select(t => t.Y).Min();
             var xMax = list.Select(t => t.X).Max();
             var yMax = list.Select(t => t.Y).Max();
 
-            HexTile.ParentMap.AllTiles = new HexTile[xMax - xMin + 1, yMax - yMin + 1];
+            GameState.Me.HexMap.AllTiles = new HexTile[xMax - xMin + 1, yMax - yMin + 1];
             //Set tiles to a 0 index, and stick them in the map.
             foreach (var tile in list)
             {
                 tile.X -= xMin;
                 tile.Y -= yMin;
-                HexTile.ParentMap.AllTiles[tile.X, tile.Y] = tile;
+                GameState.Me.HexMap.AllTiles[tile.X, tile.Y] = tile;
                 if (!GameState.Me.AllTiles.ContainsKey(tile.Id)) GameState.Me.AllTiles.Add(tile.Id, tile);
+                tile.ParentMap = GameState.Me.HexMap;
             }
         }
 

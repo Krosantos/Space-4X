@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Assets.Scripts.Utility;
+using UnityEngine.Networking;
 
 namespace Assets.Scripts.Networking
 {
@@ -7,7 +8,7 @@ namespace Assets.Scripts.Networking
     {
         public static Player Me;
         public int Id;
-        public Client Client;
+        public NetworkClient Client;
         public Dictionary<ResourceType, int> Resources;
         public List<ITurnable> Turnables; 
         public int Credits, CreditRate;

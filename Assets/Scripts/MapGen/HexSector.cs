@@ -117,8 +117,8 @@ namespace Assets.Scripts.MapGen
                 }
                 if (hexObject == null) continue;
                 var tile = hexObject.GetComponent<HexTile>();
-                
-                HexTile.ParentMap.TileList.Add(tile);
+
+                GameState.Me.HexMap.TileList.Add(tile);
                 ChildTiles.Add(tile);
                 tile.ParentSector = this;
                 tile.X = tileXCord;

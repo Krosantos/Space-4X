@@ -1,5 +1,6 @@
 ﻿#region
 
+using System;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -10,7 +11,7 @@ namespace Assets.Scripts.Networking
 {
     public class SpawnNetworkComponent : NetworkBehaviour
     {
-        public Client Client;
+        public NetworkClient Client;
         public GameObject HexPrefab;
 
         public bool IsStartUp = true;
@@ -32,6 +33,12 @@ namespace Assets.Scripts.Networking
                     Debug.Log("Client get.");
                     SetupClient();
                 }
+
+                if (Input.GetKeyDown(KeyCode.H))
+                {
+                    Debug.Log("Both get.");
+                    HostLocal();
+                }
             }
         }
 
@@ -42,6 +49,7 @@ namespace Assets.Scripts.Networking
             if (!IsStartUp) return;
             GUI.Label(new Rect(2, 10, 150, 100), "Press S for server");
             GUI.Label(new Rect(2, 50, 150, 100), "Press C for client");
+            GUI.Label(new Rect(2, 90, 150, 100), "Press H for both");
         }
 
         private void SetupServer()
@@ -52,8 +60,16 @@ namespace Assets.Scripts.Networking
 
         private void SetupClient()
         {
-            Client = new Client();
-            Client.Awake();
+            Client = new NetworkClient();
+            Client.Register(true);
+            IsStartUp = false;
+        }
+
+        private void HostLocal()
+        {
+            gameObject.AddComponent<Server>();
+            Client = ClientScene.ConnectLocalServer();
+            Client.Register(false);
             IsStartUp = false;
         }
     }

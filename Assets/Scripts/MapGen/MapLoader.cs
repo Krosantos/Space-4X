@@ -50,7 +50,7 @@ namespace Assets.Scripts.MapGen
             var result = new Dictionary<int,HexTile>();
             var hexMap = new HexMap(_serializedMap[0], _serializedMap[1]);
             Debug.Log("The map we got from the client is "+_serializedMap[0]+" by "+_serializedMap[1]+" tiles big.");
-            HexTile.ParentMap = hexMap;
+            GameState.Server.HexMap = hexMap;
             for (var t = 2; t < _serializedMap.Length; t += 8)
             {
                 //Serialized maps have large deserts of 0,0,0,0,0... on their tails. Cut this off when that happens.
@@ -69,7 +69,8 @@ namespace Assets.Scripts.MapGen
                 //Add the tile to reference lists.
                 try
                 {
-                    HexTile.TileMap[tile.X, tile.Y] = tile;
+                    GameState.Server.HexMap.AllTiles[tile.X, tile.Y] = tile;
+                    tile.ParentMap = GameState.Server.HexMap;
                     result.Add(tile.Id, tile);
                 }
                 catch (Exception e)
@@ -86,7 +87,7 @@ namespace Assets.Scripts.MapGen
         {
             var mapObject = new GameObject {name = "Map"};
             var hexMap = new HexMap(_serializedMap[0], _serializedMap[1]);
-            HexTile.ParentMap = hexMap;
+            GameState.Me.HexMap = hexMap;
 
             for (var t = 2; t < _serializedMap.Length; t += 8)
             {

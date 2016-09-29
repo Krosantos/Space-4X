@@ -10,64 +10,57 @@ using UnityEngine.Networking;
 
 namespace Assets.Scripts.Networking
 {
-    public class Client : NetworkClient
+    public static class ClientExtensions
     {
-        public GameState GameState;
-        public Player Player;
-
-        public void Awake()
+        public static void Register(this NetworkClient client, bool connect)
         {
-            Player = new Player {Client = this};
-            Player.Me = Player;
-            GameState = new GameState();
-            RegisterHandler(Messages.ChangeDiploStatus, temp);
-            RegisterHandler(Messages.CreateUnit, OnCreateUnit);
-            RegisterHandler(Messages.DestroyUnit, temp);
-            RegisterHandler(Messages.EndGame, temp);
-            RegisterHandler(Messages.EndTurn, temp);
-            RegisterHandler(Messages.TransmitMap, OnMapTransmitted);
-            RegisterHandler(Messages.MoveUnit, OnUnitMoveOrder);
-            RegisterHandler(Messages.SendMessage, temp);
-            RegisterHandler(Messages.TakeTurn, OnTurn);
-            RegisterHandler(Messages.UnlockTech, temp);
-            RegisterHandler(Messages.UpdateResources, temp);
-            RegisterHandler(Messages.RegisterNewPlayer, OnRegistered);
-            RegisterHandler(Messages.CheckForMap, OnMapCheck);
-            Connect("localhost",7777);
+            Player.Me = new Player { Client = client };
+            GameState.Me = new GameState();
+            client.RegisterHandler(Messages.ChangeDiploStatus, temp);
+            client.RegisterHandler(Messages.CreateUnit, OnCreateUnit);
+            client.RegisterHandler(Messages.DestroyUnit, temp);
+            client.RegisterHandler(Messages.EndGame, temp);
+            client.RegisterHandler(Messages.EndTurn, temp);
+            client.RegisterHandler(Messages.TransmitMap, OnMapTransmitted);
+            client.RegisterHandler(Messages.MoveUnit, OnUnitMoveOrder);
+            client.RegisterHandler(Messages.SendMessage, temp);
+            client.RegisterHandler(Messages.TakeTurn, OnTurn);
+            client.RegisterHandler(Messages.UnlockTech, temp);
+            client.RegisterHandler(Messages.UpdateResources, temp);
+            client.RegisterHandler(Messages.RegisterNewPlayer, OnRegistered);
+            client.RegisterHandler(Messages.CheckForMap, OnMapCheck);
+            if(connect)Player.Me.Client.Connect("localhost", 7777);
         }
 
         //Me is just for while I'm setting up handlers.
-        private void temp(NetworkMessage netMsg)
+        private static void temp(NetworkMessage netMsg)
         {
         }
 
-        private void OnTurn(NetworkMessage netMsg)
+        private static void OnTurn(NetworkMessage netMsg)
         {
-            Player.OnTurn();
+            Player.Me.OnTurn();
         }
 
-        private void OnCreateUnit(NetworkMessage netMsg)
+        private static void OnCreateUnit(NetworkMessage netMsg)
         {
             var msg = netMsg.ReadMessage<CreateUnitMsg>();
             var newUnitObject = Singleton<MonoBehaviour>.Instantiate(Unit.BaseUnit,
-                GameState.AllTiles[msg.TileId].transform.position, Quaternion.identity) as GameObject;
+                GameState.Me.AllTiles[msg.TileId].transform.position, Quaternion.identity) as GameObject;
             var newUnit = newUnitObject.GetComponent<Unit>();
             newUnit.CurrentHealth = msg.MaxHealth;
             newUnit.UnitId = msg.UnitId;
             newUnit.MaxHealth = msg.MaxHealth;
             newUnit.MaxMoves = msg.MaxMoves;
             newUnit.MovesLeft = msg.MaxMoves;
-            newUnit.CurrentTile = GameState.AllTiles[msg.TileId];
-            GameState.AllTiles[msg.TileId].OccupyUnit = newUnit;
-            GameState.AllUnits.Add(newUnit.UnitId, newUnit);
-            Debug.Log("The message said I'm unit id "+msg.UnitId);
-            Debug.Log("I'm unit Id "+newUnit.UnitId);
-            Debug.Log("Do I live in the GameState? "+GameState.AllUnits[newUnit.UnitId].UnitId);
+            newUnit.CurrentTile = GameState.Me.AllTiles[msg.TileId];
+            GameState.Me.AllTiles[msg.TileId].OccupyUnit = newUnit;
+            GameState.Me.AllUnits.Add(newUnit.UnitId, newUnit);
             newUnit.Sprite = Resources.Load<Sprite>(msg.Sprite);
             newUnit.CreateMoveCostDictFromArray(msg.MoveCost);
         }
 
-        private void OnMapCheck(NetworkMessage netMsg)
+        private static void OnMapCheck(NetworkMessage netMsg)
         {
             var msg = netMsg.ReadMessage<CheckMapMsg>();
             if (msg.MapExists == MapState.None)
@@ -85,7 +78,7 @@ namespace Assets.Scripts.Networking
                     YZones = 4,
                     RichnessScore = 0
                 };
-                mapGen.Launch(setting, () => { Singleton<MonoBehaviour>.Instance.StartCoroutine(SendChunksToServer(this)); });
+                mapGen.Launch(setting, () => { Singleton<MonoBehaviour>.Instance.StartCoroutine(SendChunksToServer(Player.Me.Client)); });
                 
             }
             else if (msg.MapExists == MapState.Requested)
@@ -93,44 +86,44 @@ namespace Assets.Scripts.Networking
                 //The server puts you on a list, just chill for a second.
             }
             //Otherwise, it must exist, so ask for it.
-            else Send(Messages.TransmitMap, new TransmitMapMsg(true));
+            else Player.Me.Client.Send(Messages.TransmitMap, new TransmitMapMsg(true));
         }
 
-        private void OnMapTransmitted(NetworkMessage netMsg)
+        private static void OnMapTransmitted(NetworkMessage netMsg)
         {
             var msg = netMsg.ReadMessage<TransmitMapMsg>();
-            if (msg.IsRequest) Singleton<MonoBehaviour>.Instance.StartCoroutine(SendChunksToServer(this));
+            if (msg.IsRequest) Singleton<MonoBehaviour>.Instance.StartCoroutine(SendChunksToServer(Player.Me.Client));
             else
             {
-                if (GameState.MapLoader.AddPacketToMap(msg, GameState)) GameState.MapLoader.MakeClientMapFromArray();
+                if (GameState.Me.MapLoader.AddPacketToMap(msg, GameState.Me)) GameState.Me.MapLoader.MakeClientMapFromArray();
             }
 
         }
 
-        private void OnRegistered(NetworkMessage netMsg)
+        private static void OnRegistered(NetworkMessage netMsg)
         {
             var msg = netMsg.ReadMessage<RegisterNewPlayerMsg>();
-            Player.Id = msg.PlayerId;
-            Debug.Log("I have been registered! I am playerID:" + Player.Id);
+            Player.Me.Id = msg.PlayerId;
+            Debug.Log("I have been registered! I am playerID:" + Player.Me.Id);
             
-            Send(Messages.CheckForMap, new CheckMapMsg());
+            Player.Me.Client.Send(Messages.CheckForMap, new CheckMapMsg());
         }
 
-        private void OnUnitMoveOrder(NetworkMessage netMsg)
+        private static void OnUnitMoveOrder(NetworkMessage netMsg)
         {
             var msg = netMsg.ReadMessage<MoveUnitMsg>();
             Debug.Log("Move order received for unit "+msg.UnitId);
-            var unit = GameState.AllUnits[msg.UnitId];
-            var tile = GameState.AllTiles[msg.HexTileId];
+            var unit = GameState.Me.AllUnits[msg.UnitId];
+            var tile = GameState.Me.AllTiles[msg.HexTileId];
 
             unit.Move(tile,msg.TotalMoveCost);
             //GameState.AllUnits[msg.UnitId].Move(GameState.AllTiles[msg.HexTileId],msg.TotalMoveCost);
         }
 
-        IEnumerator<WaitForSeconds> SendChunksToServer(Client client)
+        static IEnumerator<WaitForSeconds> SendChunksToServer(NetworkClient client)
         {
             Debug.Log("Map made! Sending it to the server.");
-            var wholeMap = HexTile.ParentMap.SerializeMap();
+            var wholeMap = GameState.Me.HexMap.SerializeMap();
             for (int x = 0; x < wholeMap.Length/500 + 1; x++)
             {
                 var chunk = new int[500];

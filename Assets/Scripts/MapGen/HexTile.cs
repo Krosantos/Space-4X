@@ -11,7 +11,7 @@ namespace Assets.Scripts.MapGen
     public class HexTile : MonoBehaviour, ISelectable
     {
         private static int _idGen;
-        public static HexMap ParentMap;
+        public HexMap ParentMap;
         public List<HexTile>  Neighbours{
             get
             {
@@ -44,7 +44,7 @@ namespace Assets.Scripts.MapGen
             get { return ParentSector.ParentRegion; }
         }
 
-        public static HexTile[,] TileMap
+        public HexTile[,] TileMap
         {
             get { return ParentMap.AllTiles; }
             set { ParentMap.AllTiles = value; }
@@ -148,17 +148,14 @@ namespace Assets.Scripts.MapGen
         public Color TintColor
         {
             get { return Tint.GetComponent<SpriteRenderer>().color; }
-            set { Tint.GetComponent<SpriteRenderer>().color = value; }
+            set { if(Tint != null)Tint.GetComponent<SpriteRenderer>().color = value; }
         }
 
         public void OnSelect()
         {
-            Debug.Log("Select Tile!");
-            Debug.Log("Current Type: " + UiSelect.CurrentType + ". Prev Type: " + UiSelect.LastType + ".");
             if (UiSelect.LastType != SelectType.Unit) return;
             var selectedUnit = UiSelect.Previous as Unit;
             if (selectedUnit == null) return;
-            Debug.Log("My selected unit is: "+selectedUnit);
             if (!selectedUnit.TilesInRange.Contains(this)) return;
             Player.Me.Client.Send(Messages.MoveUnit, new MoveUnitMsg(selectedUnit.UnitId, Id, 0));
             Debug.Log("Requesting to move unit "+selectedUnit.UnitId+" to tile "+Id);
@@ -166,8 +163,6 @@ namespace Assets.Scripts.MapGen
 
         public void OnDeselect()
         {
-            Debug.Log("Deselect Tile!");
-            Debug.Log("Current Type: "+UiSelect.CurrentType+". Prev Type: "+UiSelect.LastType+".");
         }
 
         [UsedImplicitly]

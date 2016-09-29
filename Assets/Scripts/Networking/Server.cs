@@ -17,7 +17,8 @@ namespace Assets.Scripts.Networking
 
         [UsedImplicitly]
         void Awake() {
-            GameState = new GameState();
+            GameState.Server = new GameState();
+            GameState = GameState.Server;
             PlayersTakingTurn = new Dictionary<int, bool>();
             _connectionPlayerMapping = new Dictionary<int, int>();
             _clientsWaitingForMap = new List<int>();
@@ -51,7 +52,6 @@ namespace Assets.Scripts.Networking
             GameState.AllUnits.Add(newUnit.UnitId,newUnit);
 
             var msgToBroadcast = CreateUnitMsg.CopyMessage(msg, newUnit);
-            Debug.Log("My useless fucking unit Id is "+msgToBroadcast.UnitId);
             NetworkServer.SendToAll(Messages.CreateUnit, msgToBroadcast);
         }
 
@@ -64,11 +64,9 @@ namespace Assets.Scripts.Networking
             var tile = GameState.AllTiles[msg.HexTileId];
             if (!ServerCalcLogic.UnitCanMove(unit, tile, out moveCost))
             {
-                Debug.Log("No dice on the moving! moveCost: "+moveCost+", movesLeft: "+unit.MovesLeft);
                 return;
             }
             unit.Move(tile,moveCost);
-            Debug.Log("Valid Move! Inform the clients!");
             NetworkServer.SendToAll(Messages.MoveUnit, new MoveUnitMsg(unit.UnitId, tile.Id, moveCost));
         }
 
@@ -77,8 +75,8 @@ namespace Assets.Scripts.Networking
             //Generate an Id for the player, and add it to the game state, the mapping of connections to players, and the turn dictionary.
             var playerId = GameState.GenerateId();
             NetworkServer.SendToClient(netMsg.conn.connectionId,Messages.RegisterNewPlayer,new RegisterNewPlayerMsg(playerId));
-            GameState.AllPlayers.Add(playerId);
-            PlayersTakingTurn.Add(playerId,false);
+            if(!GameState.AllPlayers.Contains(playerId))GameState.AllPlayers.Add(playerId);
+            if(!PlayersTakingTurn.ContainsKey(playerId))PlayersTakingTurn.Add(playerId,false);
             if (_connectionPlayerMapping.ContainsKey(netMsg.conn.connectionId))
             {
                 _connectionPlayerMapping[netMsg.conn.connectionId] = playerId;

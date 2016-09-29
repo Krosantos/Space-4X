@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Assets.Scripts.MapGen;
-using Assets.Scripts.Networking;
 using Assets.Scripts.UI;
 using Assets.Scripts.Utility;
-using JetBrains.Annotations;
 using UnityEngine;
 using Terrain = Assets.Scripts.Utility.Terrain;
 

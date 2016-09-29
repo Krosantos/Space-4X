@@ -7,7 +7,7 @@ namespace Assets.Scripts.Networking
     public class GameState
     {
         //This stores all the various things that make a up a snapshot of a game.
-        public static GameState Me;
+        public static GameState Me, Server;
         public int MaxPlayers;
         public MapLoader MapLoader;
         public Dictionary<int, Unit> AllUnits;
@@ -15,6 +15,7 @@ namespace Assets.Scripts.Networking
         public Dictionary<int, Resource> AllResources;
         public List<int> AllPlayers;
         public MapState MapState;
+        public HexMap HexMap;
         public int[] SerializedMap;
 
         private static int _currentNumber;
@@ -27,8 +28,8 @@ namespace Assets.Scripts.Networking
             AllResources = new Dictionary<int, Resource>();
             AllPlayers = new List<int>();
             MapState = MapState.None;
+            HexMap = new HexMap();
             MapLoader = new MapLoader();
-            Me = this;
         }
 
         public static int GenerateId()

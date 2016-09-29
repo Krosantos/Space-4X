@@ -7,19 +7,22 @@ namespace Assets.Scripts
 {
     class SpawnUnitTest : MonoBehaviour
     {
+        public bool IsStart = true;
+
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.Space) && IsStart)
             {
                 TestShips();
+                IsStart = false;
             }
         }
         //Test function! Kill me later!
         public void TestShips()
         {
             Debug.Log("Spawning it upppppp");
-            var blueTile = HexTile.ParentMap.AllTiles[74, 67];
-            var redTile = HexTile.ParentMap.AllTiles[75, 68];
+            var blueTile = GameState.Me.HexMap.AllTiles[74, 67];
+            var redTile = GameState.Me.HexMap.AllTiles[75, 68];
 
 
             var testUnitMsg = new CreateUnitMsg
