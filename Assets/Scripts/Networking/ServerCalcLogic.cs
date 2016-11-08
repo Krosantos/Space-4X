@@ -12,7 +12,7 @@ namespace Assets.Scripts.Networking
             var pathToTile = unit.CurrentTile.AStarPath(targetTile, unit);
             moveCost = pathToTile.Sum(hex => unit.MoveCost[hex.Terrain]);
 
-            return (moveCost >= unit.MovesLeft);
+            return (moveCost <= unit.MovesLeft);
         }
     }
 }

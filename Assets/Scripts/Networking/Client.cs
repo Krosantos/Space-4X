@@ -58,6 +58,7 @@ namespace Assets.Scripts.Networking
             GameState.Me.AllUnits.Add(newUnit.UnitId, newUnit);
             newUnit.Sprite = Resources.Load<Sprite>(msg.Sprite);
             newUnit.CreateMoveCostDictFromArray(msg.MoveCost);
+            Player.Me.Turnables.Add(newUnit);
         }
 
         private static void OnMapCheck(NetworkMessage netMsg)

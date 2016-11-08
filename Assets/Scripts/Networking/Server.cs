@@ -50,7 +50,7 @@ namespace Assets.Scripts.Networking
             newUnit.UnitId = GameState.GenerateId();
             GameState.AllTiles[msg.TileId].OccupyUnit = newUnit;
             GameState.AllUnits.Add(newUnit.UnitId,newUnit);
-
+            
             var msgToBroadcast = CreateUnitMsg.CopyMessage(msg, newUnit);
             NetworkServer.SendToAll(Messages.CreateUnit, msgToBroadcast);
         }
@@ -113,9 +113,15 @@ namespace Assets.Scripts.Networking
             if (PlayersTakingTurn.Any(x => x.Value)) return;
 
             //Otherwise, do stuff.
-            foreach (var pair in PlayersTakingTurn)
+
+            foreach (var unit in GameState.AllUnits.Values)
             {
-                PlayersTakingTurn[pair.Key]= true;
+                unit.OnTurn();
+            }
+
+            foreach (var key in new List<int>(PlayersTakingTurn.Keys))
+            {
+                PlayersTakingTurn[key]= true;
                 NetworkServer.SendToAll(Messages.TakeTurn, new TakeTurnMsg());
             }
         }

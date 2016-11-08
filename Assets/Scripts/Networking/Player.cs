@@ -18,6 +18,12 @@ namespace Assets.Scripts.Networking
         //List of blueprints
         //Dictionary of player<-->agreement struct
 
+        public Player()
+        {
+            Resources = new Dictionary<ResourceType, int>();
+            Turnables = new List<ITurnable>();
+        }
+
         public void RequestToMove(int unitId, int tileId)
         {
             Client.Send(Messages.MoveUnit, new MoveUnitMsg(unitId, tileId, 0));
