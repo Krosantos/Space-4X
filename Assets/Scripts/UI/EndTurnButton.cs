@@ -7,13 +7,7 @@ namespace Assets.Scripts.UI
 
         public void EndTurn()
         {
-            Debug.Log("END");
             Player.Me.EndTurn();
-        }
-
-        public void Boop()
-        {
-            Debug.Log("boop");
         }
     }
 }

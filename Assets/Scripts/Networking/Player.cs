@@ -36,6 +36,9 @@ namespace Assets.Scripts.Networking
 
         public void OnTurn()
         {
+            Credits += CreditRate;
+            Science += ScienceRate;
+            Diplo += DiploRate;
             foreach (var turnable in Turnables)
             {
                 turnable.OnTurn();

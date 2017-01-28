@@ -1,6 +1,6 @@
-﻿using System.Diagnostics;
-using System.Linq;
+﻿using System.Linq;
 using Assets.Scripts.MapGen;
+using Assets.Scripts.Units;
 
 namespace Assets.Scripts.Networking
 {

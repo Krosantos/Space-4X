@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Assets.Scripts.Utility;
+﻿using Assets.Scripts.Utility;
 
 namespace Assets.Scripts.UI
 {

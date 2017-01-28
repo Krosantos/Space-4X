@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Assets.Scripts
+namespace Assets.Scripts.Utility
 {
     public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
     {

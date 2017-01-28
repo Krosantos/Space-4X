@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using Assets.Scripts.MapGen;
+using Assets.Scripts.Units;
 using Assets.Scripts.Utility;
 using UnityEngine;
 using UnityEngine.Networking;

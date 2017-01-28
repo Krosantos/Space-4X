@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Assets.Scripts.Units;
 using Assets.Scripts.Utility;
 using JetBrains.Annotations;
 using UnityEngine;
@@ -59,7 +59,7 @@ namespace Assets.Scripts.Networking
         {
             var msg = netMsg.ReadMessage<MoveUnitMsg>();
             Debug.Log("Request to move in from unit "+msg.UnitId+" to tile "+msg.HexTileId);
-            var moveCost = 0;
+            int moveCost;
             var unit = GameState.AllUnits[msg.UnitId];
             var tile = GameState.AllTiles[msg.HexTileId];
             if (!ServerCalcLogic.UnitCanMove(unit, tile, out moveCost))
